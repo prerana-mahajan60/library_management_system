@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Font - Elsie Swash Caps -->
+  <link href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: url("{{ url_for('static', filename='image/lib5.jpg') }}") no-repeat center center/cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .update-container {
+      max-width: 500px;
+      width: 80%;
+      background: rgba(255, 255, 255, 0.2); /* ✅ Transparent effect */
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px); /* ✅ Glassmorphism Effect */
+      text-align: center; /* ✅ Center everything inside */
+    }
+    h2, label, .form-label {
+      font-family: 'Elsie Swash Caps', cursive;
+      color: #f8f9fa; /* ✅ Soft White Font */
+    }
+    .form-control {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: #f8f9fa; /* ✅ Soft White Text */
+    }
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.8);
+      color: black;
+    }
+    .btn {
+      font-family: 'Elsie Swash Caps', cursive;
+      font-size: 18px;
+      background:#00bfff;
+    }
+
+    /* ✅ Profile Image Centered */
+    .profile-image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .profile-image {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid white;
+    }
+
+    /* ✅ Back to Student Profile Button with Gradient */
+    .back-to-profile-btn {
+      background: linear-gradient(135deg, #87cefa, #9370db); /* Sky blue and purple */
+      color: white;
+      border: none;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      position: fixed; /* ✅ Position fixed at the bottom right corner */
+      bottom: 20px;
+      right: 20px;
+      text-decoration: none; /* ✅ Remove underline */
+    }
+
+    .back-to-profile-btn:hover {
+      background: linear-gradient(135deg, #9370db, #87cefa);
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="update-container">
+    <h2 class="text-center">Update Profile</h2>
+
+    <!-- ✅ Centered Profile Image -->
+    <div class="profile-image-container">
+      <img id="profileImage" src="{{ url_for('static', filename='image/mstud4.avif') if student.gender|lower == 'male' else url_for('static', filename='image/fstud4.avif') if student.gender|lower == 'female' else url_for('static', filename='image/other.avif') }}" alt="Profile Image" class="profile-image">
+    </div>
+
+    <!-- ✅ Flash Messages -->
+    <div class="flash-messages">
+      {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- ✅ Update Form -->
+    <form action="{{ url_for('student.update_profile') }}" method="POST">
+      <div class="mb-3">
+        <label for="name" class="form-label">Full Name</label>
+        <input type="text" id="name" name="name" class="form-control" value="{{ student.name }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" name="email" class="form-control" value="{{ student.email }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="course" class="form-label">Course</label>
+        <input type="text" id="course" name="course" class="form-control" value="{{ student.course }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select id="gender" name="gender" class="form-control" required onchange="updateProfileImage()">
+          <option value="Male" {% if student.gender|lower =='male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if student.gender|lower =='female' %}selected{% endif %}>Female</option>
+          <option value="Other" {% if student.gender|lower =='other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+    </form>
+  </div>
+
+  <!-- ✅ JavaScript to Change Profile Image Based on Gender Selection -->
+  <script>
+    function updateProfileImage() {
+      var gender = document.getElementById("gender").value;
+      var profileImage = document.getElementById("profileImage");
+
+      if (gender.toLowerCase() === "male") {
+        profileImage.src = "{{ url_for('static', filename='image/mstud4.avif') }}";
+      } else if (gender.toLowerCase() === "female") {
+        profileImage.src = "{{ url_for('static', filename='image/fstud4.avif') }}";
+      } else {
+        profileImage.src = "{{ url_for('static', filename='image/other.avif') }}";
+      }
+    }
+
+    // ✅ Auto-hide flash messages after 3 seconds
+    setTimeout(function() {
+      let alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500);
+      });
+    }, 3000);
+  </script>
+
+  <!-- ✅ Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ✅ Back to Profile Button -->
+  <a href="{{ url_for('student.student_profile') }}" class="back-to-profile-btn">Back to Profile</a>
+</body>
+</html>

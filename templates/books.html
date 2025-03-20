@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books - Library Management</title>
+
+    <!-- Bootstrap, Google Fonts, Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styling */
+        * { font-family: 'Elsie Swash Caps', cursive; color: white; }
+        body {
+            background: url("{{ url_for('static', filename='image/lib3.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.6);
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            backdrop-filter: blur(10px);
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .sidebar a:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            width: calc(100% - 260px);
+        }
+
+        /* Book Cards Slider */
+        .slider-container {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            gap: 18px;
+            align-items: center;
+        }
+
+        /* ✅ Book Card */
+        .book-card {
+            background: rgba(255, 255, 255, 0.1) url("{{ url_for('static', filename='image/book1.jpg') }}") no-repeat center center;
+            background-size: cover;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 260px;
+            height: 300px;
+            flex-shrink: 0;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .book-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .book-card h5, .book-card p {
+            margin: 5px 0;
+            padding: 0;
+            color:black;
+        }
+        .remove-btn
+        {
+             background:#c02333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Elsie Swash Caps', cursive;
+            text-decoration:none;
+        }
+        .remove-btn:hover {
+            background:#dd4e5c;
+        }
+
+        /* Slider Navigation Buttons */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .slider-btn:hover { background: rgba(255, 255, 255, 0.4); }
+        .prev-btn { left: 5px; }
+        .next-btn { right: 5px; }
+
+        /* Admin Controls */
+        .admin-controls {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            color: black;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.6) url("{{ url_for('static', filename='image/book9.jpg') }}") no-repeat center center;
+            background-size: cover;
+           box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+     /* Add Book Button */
+        .btn-add-book {
+             background: linear-gradient(45deg,   #031121,rgb(148, 148, 146));
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 15px;
+            border: none;
+            transition: 0.3s;
+}
+        .btn-add-book:hover {
+         background: linear-gradient(45deg, rgb(148, 148, 146), #031121);
+            box-shadow: 0 0 15px rgb(106, 102, 102);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="{{ url_for('admin.admin_home') }}"><i class="fa fa-home"></i> Home</a>
+        <a href="{{ url_for('books_bp.books') }}"><i class="fa fa-book"></i> Manage Books</a>
+        <a href="{{ url_for('transactions_bp.transactions_page') }}"><i class="fa fa-exchange-alt"></i> Students Transactions</a>
+        <a href="{{ url_for('admin.admin_logout') }}"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2 class="text-white text-center mb-4">📚 Available Books</h2>
+
+        <!-- ✅ Language-Based Book Carousels -->
+        {% for lang, books in books_by_language.items() %}
+        <h3 class="text-white text-center mt-4">{{ lang }} Books</h3>
+        <div class="slider-container">
+            <button class="slider-btn prev-btn">&lt;</button>
+            <div class="slider">
+                {% for book in books %}
+                <div class="book-card">
+                    <h5>{{ book.book_name }}</h5>
+                    <p>📖 Author: {{ book.author }}</p>
+                    <p>📅 Year: {{ book.year }}</p>
+                    <p>📚 Available Copies: {{ book.available_copies }}</p>
+                    <p>🌐 Language: {{ book.language }}</p>
+                    {% if role == "Admin" %}
+                    <a href="{{ url_for('books_bp.delete_book', book_id=book['book_id']) }}" class="remove-btn">Remove</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="slider-btn next-btn">&gt;</button>
+        </div>
+        {% endfor %}
+
+        <!-- Admin Controls (Only for Admin) -->
+        {% if role == "Admin" %}
+        <div class="admin-controls">
+            <h4 class="text-black text-center">Add New Book</h4>
+            <form action="{{ url_for('books_bp.add_book') }}" method="POST">
+                <input type="text" name="book_name" placeholder="Book Name" class="form-control mb-2" required>
+                <input type="text" name="author" placeholder="Author" class="form-control mb-2" required>
+                <input type="number" name="year" placeholder="Year" class="form-control mb-2" required>
+                <input type="number" name="available_copies" placeholder="Available Copies" class="form-control mb-2" required>
+                <select name="language" class="form-control mb-2">
+                    <option value="Hindi">Hindi</option>
+                    <option value="Marathi">Marathi</option>
+                    <option value="English">English</option>
+                </select>
+                <button type="submit" class="btn btn-add-book w-100">Add Book</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all sliders
+        document.querySelectorAll(".slider-container").forEach((container) => {
+            const slider = container.querySelector(".slider");
+            const prevBtn = container.querySelector(".prev-btn");
+            const nextBtn = container.querySelector(".next-btn");
+
+            let scrollAmount = 0;
+            const scrollStep = 250; // Adjust how much it scrolls per click
+
+            // Forward slide
+            nextBtn.addEventListener("click", function () {
+                if (scrollAmount <= slider.scrollWidth - container.offsetWidth) {
+                    scrollAmount += scrollStep;
+                    slider.style.transform = `translateX(-${scrollAmount}px)`;
+                }
+            });
+
+            // Backward slide
+            prevBtn.addEventListener("click", function () {
+                if (scrollAmount > 0) {
+                    scrollAmount -= scrollStep;
+                    slider.style.transform = `translateX(-${scrollAmount}px)`;
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

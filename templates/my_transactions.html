@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Transactions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap">
+
+    <style>
+        /* ✅ Main Body */
+        body {
+            font-family: 'Elsie Swash Caps', cursive;
+            background: radial-gradient(circle at 50% 20%, #3b3b5f, #1a1a2e);
+            background-image: url("{{ url_for('static', filename='image/libglow3.jpg') }}");
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+         /* ✅ My Transactions with Glow */
+         h2 {
+                 text-align: center;
+                 font-size: 28px;
+                 color: #fff;
+                 margin-bottom: 10px;
+                 text-shadow: 0 0 18px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.9);
+           }
+
+          /* ✅ Student Name with Glow */
+         .student-name {
+                text-align: center;
+                font-size: 18px;
+                color: #fff;
+                margin-top: -5px;
+                margin-bottom: 15px;
+                font-style: italic;
+                text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
+            }
+
+
+
+        /* ✅ Sidebar */
+        .sidebar {
+            width: 250px;
+            background: rgba(20, 20, 20, 0.9);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar h2 {
+            color: #f1f1f1;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            width: 100%;
+            text-align: center;
+            transition: 0.3s;
+            font-size: 18px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 5px solid #00c9ff;
+        }
+
+        /* ✅ Main Content */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* ✅ Outer Container */
+        .outer-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: rgba(135, 206, 250, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* ✅ Search Bar Container */
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #8e2de2;
+        }
+
+        /* ✅ Table Container Centered */
+        .table-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(240, 248, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 25px auto;
+            overflow-x: auto;
+            margin-left:-6px;
+        }
+
+        /* ✅ Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(240, 248, 255, 0.9);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #4a00e0, #8e2de2);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* ✅ Row Effects */
+        tr {
+            transition: all 0.2s ease-in-out;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(224, 247, 250, 0.6);
+        }
+
+        tr:hover {
+            background-color: rgba(173, 216, 230, 0.5);
+            transform: scale(1.01);
+        }
+
+        /* ✅ Badge Styles */
+        .badge-shipped {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-delivered {
+            background-color: #17a2b8;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background-color: #ffc107;
+            color: black;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        /* ✅ Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 10px;
+            }
+
+            .outer-container {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .table-container {
+                width: 100%;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ✅ Sidebar -->
+    <div class="sidebar">
+        <h2>📚 Student Panel</h2>
+        <a href="{{ url_for('student.student_home') }}">🏠 Home</a>
+        <a href="{{ url_for('browse_books_bp.browse_books') }}">📖 Browse Books</a>
+        <a href="{{ url_for('transactions_bp.my_transactions') }}">📜 My Transactions</a>
+        <a href="{{ url_for('student.student_logout') }}">🚪 Logout</a>
+    </div>
+
+    <!-- ✅ Main Content -->
+    <div class="content">
+        <div class="outer-container">
+            <!-- ✅ Title and Student Name -->
+            <h2>📜 My Transactions</h2>
+            <div class="student-name">Welcome, {{ student_name }}!</div>
+
+            <!-- ✅ Search Bar -->
+            <div class="search-container">
+                <input type="text" id="searchInput" onkeyup="filterTransactions()" placeholder="Search transactions...">
+            </div>
+
+            <!-- ✅ Table Properly Centered -->
+            <div class="table-container">
+                <table id="transactionTable">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Book Name</th>
+                            <th>Action</th>
+                            <th>Borrow Date</th>
+                            <th>Due Date</th>
+                            <th>Return Date</th>
+                            <th>Transaction Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.transaction_id }}</td>
+                            <td>{{ transaction.book_name }}</td>
+                            <td>
+                                {% if transaction.action == 'return' %}
+                                <span class="badge badge-delivered">Returned</span>
+                                {% elif transaction.action == 'borrow' %}
+                                <span class="badge badge-shipped">Borrowed</span>
+                                {% else %}
+                                <span class="badge badge-pending">{{ transaction.action }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ transaction.borrow_date }}</td>
+                            <td>{{ transaction.due_date or 'N/A' }}</td>
+                            <td>{{ transaction.return_date or 'N/A' }}</td>
+                            <td>{{ transaction.transaction_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript for Search -->
+    <script>
+        function filterTransactions() {
+            let input, filter, table, tr, td, i, j, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("transactionTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) {
+                let isVisible = false;
+                td = tr[i].getElementsByTagName("td");
+                for (j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            isVisible = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = isVisible ? "" : "none";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

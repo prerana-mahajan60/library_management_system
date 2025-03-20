@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Transaction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Import Font */
+        @import url('https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap');
+
+        /* General Styling */
+        body {
+            font-family: 'Elsie Swash Caps', cursive;
+            background: url('/static/image/lib3.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: black;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container Box */
+        .container {
+            background: url('/static/image/new1.avif') no-repeat center center;
+            background-size: cover; /* Ensure it covers the form */
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 420px; /* Slightly bigger for better alignment */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Form Fields */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            align-self: flex-start;
+        }
+
+        input, select {
+            padding: 12px;
+            margin-top: 5px;
+            width: 100%;
+            max-width: 360px; /* Consistent field width */
+            border: 2px solid black;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            color: black;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        input:focus, select:focus {
+            background: rgba(0, 0, 0, 0.2);
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        /* Make Student & Book Name Editable */
+        #student, #book {
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            max-width: 360px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-save {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #45a049;
+        }
+
+        .btn-back {
+            background: #2196F3;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-back:hover {
+            background: #0b7dda;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+            }
+            input, select, .btn {
+                max-width: 95%;
+            }
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Update Transaction</h2>
+
+        <form action="{{ url_for('transactions_bp.update_transaction', transaction_id=transaction.transaction_id) }}" method="post">
+            <label for="student">Student</label>
+            <input type="text" id="student" name="student_name" value="{{ transaction.student_name }}">
+
+            <label for="book">Book</label>
+            <input type="text" id="book" name="book_name" value="{{ transaction.book_name }}">
+
+            <label for="action">Action</label>
+            <select name="action" id="action">
+                <option value="borrow" {% if transaction.action =='borrow' %}selected{% endif %}>Borrow</option>
+                <option value="return" {% if transaction.action =='return' %}selected{% endif %}>Return</option>
+            </select>
+
+            <label for="due_date">Due Date</label>
+            <input type="date" name="due_date" id="due_date" value="{{ transaction.due_date or '' }}">
+
+            <button type="submit" class="btn btn-save">Save Changes</button>
+        </form>
+
+        <!-- Back to Transactions Button -->
+        <a href="{{ url_for('transactions_bp.transactions_page') }}" class="btn btn-back">⬅ Back to Transactions</a>
+    </div>
+
+</body>
+</html>
