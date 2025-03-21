@@ -54,6 +54,7 @@ def student_home():
 #student profile
 @student_bp.route("/student_profile")
 def student_profile():
+    session.pop('_flashes', None)
     if "student_id" not in session:
         flash("Please log in first!", "danger")
         return redirect(url_for("auth.student_login"))

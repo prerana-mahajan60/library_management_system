@@ -11,8 +11,11 @@
     <style>
         body {
             font-family: 'Elsie Swash Caps', cursive;
-            background: radial-gradient(circle at 50% 20%, #3b3b5f, #1a1a2e);
-            background-image: url("{{ url_for('static', filename='image/libglow3.jpg') }}");
+             background-image: url("{{ url_for('static', filename='image/lib3.jpg') }}");
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            transform: none;
             margin: 0;
             padding: 0;
             display: flex;
@@ -31,9 +34,9 @@
 
          .student-name {
                 text-align: center;
-                font-size: 18px;
+                font-size: 21px;
                 color: #fff;
-                margin-top: -5px;
+                margin-top: -1px;
                 margin-bottom: 15px;
                 font-style: italic;
                 text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
@@ -231,7 +234,7 @@
 
     <!--Sidebar-->
     <div class="sidebar">
-        <h2>📚 Student Panel</h2>
+        <h2>Student System</h2>
         <a href="{{ url_for('student.student_home') }}">Home</a>
         <a href="{{ url_for('browse_books_bp.browse_books') }}">Browse Books</a>
         <a href="{{ url_for('transactions_bp.my_transactions') }}">My Transactions</a>
@@ -240,9 +243,8 @@
     <!--Main Content-->
     <div class="content">
         <div class="outer-container">
-
-            <h2>My Transactions</h2>
             <div class="student-name">Welcome, {{ student_name }}!</div>
+               <h2>My Transactions</h2>
 
             <!--Search Bar-->
             <div class="search-container">

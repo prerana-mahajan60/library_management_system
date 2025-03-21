@@ -42,6 +42,7 @@ def admin_home():
 # Admin Profile
 @admin_bp.route("/admin/profile")
 def admin_profile():
+    session.pop('_flashes', None)
     if "admin_id" not in session:
         flash("Please log in first!", "danger")
         return redirect(url_for("auth.admin_login"))
@@ -176,6 +177,7 @@ def delete_profile():
 #admin_logout
 @admin_bp.route("/admin_logout")
 def admin_logout():
+    #session.pop('_flashes', None)
     session.clear()
     flash("Logged out successfully!", "info")
     return redirect(url_for("auth.admin_login"))

@@ -4,7 +4,7 @@ from config import get_db_connection
 
 transactions_bp = Blueprint("transactions_bp", __name__, template_folder="templates")
 
-#Transactions Page (Admin Handle The students Transactions)
+# Transactions Page (Admin Handle The students Transactions)
 @transactions_bp.route("/transactions")
 def transactions_page():
     if session.get("role") != "Admin":
@@ -16,7 +16,7 @@ def transactions_page():
 
     try:
         query = """
-        SELECT 
+        SELECT DISTINCT
             t.transaction_id, 
             t.student_id,  
             COALESCE(s.name, 'Unknown Student') AS student_name,  
@@ -24,16 +24,14 @@ def transactions_page():
             t.action, 
             t.borrow_date, 
             t.due_date, 
-            CASE 
-                WHEN t.action = 'return' AND rb.return_date IS NOT NULL THEN rb.return_date  
-                ELSE NULL 
-            END AS return_date,
+            (SELECT return_date 
+             FROM returned_books rb 
+             WHERE rb.student_id = t.student_id AND rb.book_id = t.book_id
+             LIMIT 1) AS return_date,
             t.transaction_date
         FROM transactions t
         LEFT JOIN student s ON t.student_id = s.student_id  
         LEFT JOIN books b ON t.book_id = b.book_id
-        LEFT JOIN returned_books rb ON t.student_id = rb.student_id AND t.book_id = rb.book_id
-            AND t.action = 'return'
         ORDER BY t.transaction_date DESC;
         """
         cursor.execute(query)
@@ -51,7 +49,7 @@ def transactions_page():
     return render_template("transactions.html", transactions=transactions, admin={"name": admin_name})
 
 
-#Update Transactions by Admin
+# Update Transactions by Admin
 @transactions_bp.route("/transactions/update/<int:transaction_id>", methods=["GET"])
 def update_transaction_page(transaction_id):
     if session.get("role") != "Admin":
@@ -96,7 +94,7 @@ def update_transaction_page(transaction_id):
     return render_template("update_transactions.html", transaction=transaction)
 
 
-#Update Transactions (Auto-Set Return Date for Return Action)
+# Update Transactions (Auto-Set Return Date for Return Action)
 @transactions_bp.route("/transactions/update/<int:transaction_id>", methods=["POST"])
 def update_transaction(transaction_id):
     if session.get("role") != "Admin":
@@ -110,7 +108,7 @@ def update_transaction(transaction_id):
 
     try:
         if action == "borrow":
-            #Auto-set due_date to 14 days if action is "borrow"
+            # Auto-set due_date to 14 days if action is "borrow"
             cursor.execute(
                 """
                 UPDATE transactions 
@@ -122,7 +120,7 @@ def update_transaction(transaction_id):
                 (action, transaction_id),
             )
         elif action == "return":
-            #Set return_date to NOW() if action is "return"
+            # Set transaction_date to NOW() if action is "return"
             cursor.execute(
                 """
                 UPDATE transactions 
@@ -133,16 +131,28 @@ def update_transaction(transaction_id):
                 (action, transaction_id),
             )
 
-            # Update the returned_books
+            # Check if return record already exists
             cursor.execute(
                 """
-                INSERT INTO returned_books (student_id, book_id, return_date)
-                SELECT student_id, book_id, NOW() 
-                FROM transactions 
-                WHERE transaction_id = %s
+                SELECT return_date FROM returned_books
+                WHERE student_id = (SELECT student_id FROM transactions WHERE transaction_id = %s)
+                  AND book_id = (SELECT book_id FROM transactions WHERE transaction_id = %s)
                 """,
-                (transaction_id,)
+                (transaction_id, transaction_id),
             )
+            existing_return = cursor.fetchone()
+
+            # If no return record, insert it
+            if not existing_return:
+                cursor.execute(
+                    """
+                    INSERT INTO returned_books (student_id, book_id, return_date)
+                    SELECT student_id, book_id, NOW()
+                    FROM transactions
+                    WHERE transaction_id = %s
+                    """,
+                    (transaction_id,),
+                )
 
         conn.commit()
         flash("Transaction updated successfully!", "success")
@@ -158,7 +168,7 @@ def update_transaction(transaction_id):
     return redirect(url_for("transactions_bp.transactions_page"))
 
 
-#Delete  Transactions by admin
+# Delete Transactions by admin
 @transactions_bp.route("/transactions/delete/<int:transaction_id>", methods=["POST"])
 def delete_transaction(transaction_id):
     if session.get("role") != "Admin":
@@ -189,9 +199,9 @@ def delete_transaction(transaction_id):
     return redirect(url_for("transactions_bp.transactions_page"))
 
 
-#------------------------------------------------For_students-------------------------------------------------
+# ------------------------------------------------For_students-------------------------------------------------
 
-#for student_transactions....(students transactions which is on student system of logged-student)
+# For student_transactions....(students transactions which is on student system of logged-student)
 @transactions_bp.route("/my_transactions")
 def my_transactions():
     student_id = session.get("student_id")
@@ -210,7 +220,10 @@ def my_transactions():
                    t.action, 
                    t.borrow_date, 
                    t.due_date, 
-                   t.return_date, 
+                   (SELECT return_date 
+                    FROM returned_books rb 
+                    WHERE rb.student_id = t.student_id AND rb.book_id = t.book_id
+                    LIMIT 1) AS return_date,
                    t.transaction_date
             FROM transactions t
             LEFT JOIN books b ON t.book_id = b.book_id
@@ -220,7 +233,7 @@ def my_transactions():
 
         transactions = cursor.fetchall()
 
-        #Fetching student name
+        # Fetching student name
         cursor.execute("SELECT name FROM student WHERE student_id = %s", (student_id,))
         student = cursor.fetchone()
         student_name = student["name"] if student else "Student"

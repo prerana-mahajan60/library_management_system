@@ -157,6 +157,7 @@ def student_register():
 #student_login
 @auth_bp.route("/student_login", methods=["GET", "POST"])
 def student_login():
+    session.pop('_flashes', None)
     if request.method == "POST":
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "").strip()
