@@ -9,7 +9,7 @@
 
     <style>
         * {
-            font-family: 'Elsie Swash Caps', cursive; /* ✅ Apply Elsie Swash Caps to all text */
+            font-family: 'Elsie Swash Caps', cursive;
             box-sizing: border-box;
         }
 
@@ -20,7 +20,7 @@
             display: flex;
         }
 
-        /* Sidebar Styling */
+        /* Sidebar */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -90,7 +90,7 @@
         }
 
         .student-info h5 {
-            font-weight: 400; /* ✅ Normal weight instead of extreme bold */
+            font-weight: 400;
             margin-bottom: 5px;
         }
 
@@ -111,7 +111,7 @@
 </head>
 <body>
 
-<!-- Sidebar -->
+<!--Sidebar-->
 <div class="sidebar">
     <h3>Admin Panel</h3>
     <a href="{{ url_for('admin.admin_home') }}">🏠 Home</a>
@@ -120,7 +120,7 @@
     <a href="{{ url_for('student.students_list_page') }}" style="background: rgba(255, 255, 255, 0.2);">👨‍🎓 Students List</a>
 </div>
 
-<!-- Main Content -->
+<!--Main Content-->
 <div class="main-content">
     <h2 class="text-center mb-4">Student Profiles</h2>
     <div class="row">
@@ -135,7 +135,7 @@
                     <p><strong>Course:</strong> {{ student.course }}</p>
                 </div>
 
-                <!-- Remove Button -->
+                <!--Remove Button-->
                 <form action="{{ url_for('student.remove_student', student_id=student.student_id) }}" method="post">
                     <button type="submit" class="remove-btn" onclick="return confirm('Are you sure you want to delete this student?')">Remove</button>
                 </form>

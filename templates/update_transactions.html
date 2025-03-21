@@ -6,10 +6,9 @@
     <title>Update Transaction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        /* Import Font */
+        /*font importing*/
         @import url('https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap');
 
-        /* General Styling */
         body {
             font-family: 'Elsie Swash Caps', cursive;
             background: url('/static/image/lib3.jpg') no-repeat center center fixed;
@@ -27,11 +26,11 @@
         /* Container Box */
         .container {
             background: url('/static/image/new1.avif') no-repeat center center;
-            background-size: cover; /* Ensure it covers the form */
+            background-size: cover;
             padding: 30px;
             border-radius: 10px;
             width: 90%;
-            max-width: 420px; /* Slightly bigger for better alignment */
+            max-width: 420px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -54,7 +53,7 @@
             padding: 12px;
             margin-top: 5px;
             width: 100%;
-            max-width: 360px; /* Consistent field width */
+            max-width: 360px;
             border: 2px solid black;
             border-radius: 5px;
             background: rgba(0, 0, 0, 0.1);
@@ -73,7 +72,6 @@
             border-color: #4CAF50;
         }
 
-        /* Make Student & Book Name Editable */
         #student, #book {
             cursor: pointer;
         }
@@ -114,7 +112,7 @@
             background: #0b7dda;
         }
 
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 480px) {
             .container {
                 width: 95%;
@@ -155,7 +153,7 @@
             <button type="submit" class="btn btn-save">Save Changes</button>
         </form>
 
-        <!-- Back to Transactions Button -->
+        <!-- back to transactions btn -->
         <a href="{{ url_for('transactions_bp.transactions_page') }}" class="btn btn-back">⬅ Back to Transactions</a>
     </div>
 

@@ -6,39 +6,36 @@ from flask_bcrypt import Bcrypt
 
 auth_bp = Blueprint("auth", __name__, template_folder="templates")
 
-# ✅ Initialize Bcrypt
+#Initialize Bcrypt
 bcrypt = Bcrypt()
 
 # ---------------------------------------------Admin-------------------------------------------------------
-# ✅ Admin Register
+#Admin_Register
 @auth_bp.route("/admin_register", methods=["GET", "POST"])
 def admin_register():
     if request.method == "POST":
         name = request.form["name"].strip()
         email = request.form["email"].strip()
         password = request.form["password"].strip()
-        gender = request.form["gender"].strip().lower()  # ✅ Corrected gender fetching
+        gender = request.form["gender"].strip().lower()
 
-        # ✅ Check if gender is empty
         if not gender:
-            flash("❌ Please select your gender!", "danger")
+            flash("Please select your gender!", "danger")
             return redirect(url_for("auth.admin_register"))
 
-        # ✅ Hash the password securely
+        # Hash-password for security
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-        # ✅ Get DB connection
+        #get_database_connection
         connection = get_db_connection()
         cursor = connection.cursor()
 
         try:
-            # ✅ Check if email already exists in the `admin` table
             cursor.execute("SELECT email FROM admin WHERE email = %s", (email,))
             if cursor.fetchone():
-                flash("❌ Error: Email already exists!", "danger")
+                flash("Error: Email already exists!", "danger")
                 return redirect(url_for("auth.admin_register"))
 
-            # ✅ Insert new admin record with gender included
             cursor.execute(
                 """
                 INSERT INTO admin (admin_name, email, password, gender)
@@ -48,12 +45,12 @@ def admin_register():
             )
             connection.commit()
 
-            flash("✅ Admin Registered Successfully! Please log in.", "success")
+            flash("Admin Registered Successfully! Please log in.", "success")
             return redirect(url_for("auth.admin_login"))
 
         except mysql.connector.Error as e:
             connection.rollback()
-            flash(f"❌ Database Error: {str(e)}", "danger")
+            flash(f"Database Error: {str(e)}", "danger")
 
         finally:
             cursor.close()
@@ -62,58 +59,55 @@ def admin_register():
     return render_template("admin_register.html")
 
 
-# ✅ Admin Login
+#Admin_Login
 @auth_bp.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         email = request.form["email"].strip()
         password = request.form["password"].strip()
 
-        # ✅ Get DB connection
+        #get_database_connection
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
         try:
-            # ✅ Check if admin exists with given email
             cursor.execute("SELECT * FROM admin WHERE email = %s", (email,))
             admin = cursor.fetchone()
 
         except mysql.connector.Error:
-            flash("❌ Database error occurred! Please try again.", "danger")
+            flash("Database error occurred! Please try again.", "danger")
             admin = None
 
         finally:
             cursor.close()
             connection.close()
 
-        # ✅ If admin record is found
         if admin:
             db_password = admin["password"]
 
-            # ✅ Check password validity
+            #Checking_password_validity
             if db_password and bcrypt.check_password_hash(db_password, password):
                 session.clear()
-                session["admin_id"] = admin["admin_id"]  # Corrected admin_id
-                session["admin_name"] = admin["admin_name"]  # ✅ Corrected name assignment
+                session["admin_id"] = admin["admin_id"]
+                session["admin_name"] = admin["admin_name"]
                 session["role"] = "Admin"
 
-                flash("✅ Login Successful!", "success")
+                flash("Login Successful!", "success")
 
-                # ✅ Redirect to correct admin home route
                 return redirect(url_for("admin.admin_home"))
 
             else:
-                flash("❌ Incorrect password or credentials!", "danger")
+                flash("Incorrect password!", "danger")
 
         else:
-            flash("❌ Invalid Email or Password!", "danger")
+            flash("Invalid Email or Password!", "danger")
 
     return render_template("admin_login.html")
 
 
 # ------------------------------------Student--------------------------------------------------
 
-# ✅ Student Register
+#Student_Register
 @auth_bp.route("/student_register", methods=["GET", "POST"])
 def student_register():
     if request.method == "POST":
@@ -124,7 +118,7 @@ def student_register():
         gender = request.form.get("gender", "").strip()
 
         if not name or not email or not password or not course or not gender:
-            flash("❌ All fields are required!", "danger")
+            flash("All fields are required!", "danger")
             return redirect(url_for("auth.student_register"))
 
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -135,7 +129,7 @@ def student_register():
         try:
             cursor.execute("SELECT email FROM student WHERE email = %s", (email,))
             if cursor.fetchone():
-                flash("❌ Email already exists!", "danger")
+                flash("Email already exists!", "danger")
                 return redirect(url_for("auth.student_register"))
 
             cursor.execute(
@@ -147,12 +141,12 @@ def student_register():
             )
             connection.commit()
 
-            flash("✅ Registration successful! Please log in.", "success")
+            flash("Registration successful! Please log in.", "success")
             return redirect(url_for("auth.student_login"))
 
         except mysql.connector.Error as e:
             connection.rollback()
-            flash(f"❌ Registration failed: {str(e)}", "danger")
+            flash(f"Registration failed: {str(e)}", "danger")
 
         finally:
             cursor.close()
@@ -160,7 +154,7 @@ def student_register():
 
     return render_template("student_register.html")
 
-
+#student_login
 @auth_bp.route("/student_login", methods=["GET", "POST"])
 def student_login():
     if request.method == "POST":
@@ -175,7 +169,7 @@ def student_login():
             student = cursor.fetchone()
 
         except mysql.connector.Error:
-            flash("❌ Database error occurred! Please try again.", "danger")
+            flash("Database error occurred! Please try again.", "danger")
             student = None
 
         finally:
@@ -191,19 +185,19 @@ def student_login():
                 session["username"] = student["name"]
                 session["role"] = "Student"
 
-                flash("✅ Login Successful!", "success")
+                flash("Login Successful!", "success")
                 return redirect(url_for("student.student_home"))
 
             else:
-                flash("❌ Incorrect password or credentials!", "danger")
+                flash("Incorrect password!", "danger")
 
         else:
-            flash("❌ Invalid Email or Password!", "danger")
+            flash("Invalid Email or Password!", "danger")
 
     return render_template("student_login.html")
 
 
-# ✅ Logout
+#Logout
 @auth_bp.route("/logout")
 def logout():
     session.clear()
@@ -211,7 +205,7 @@ def logout():
     return redirect(url_for("auth.login_system"))
 
 
-# ✅ Login System Page
+#Login_System
 @auth_bp.route("/login_system")
 def login_system():
     return render_template("login_system.html")

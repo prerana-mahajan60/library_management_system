@@ -2,11 +2,11 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import mysql.connector
 from datetime import datetime, timedelta
 
-# Create a Blueprint for the "Browse Books" page
+#browse_books_blueprint
 browse_books_bp = Blueprint('browse_books_bp', __name__, template_folder="templates")
 
 
-# Helper function to get DB connection
+#get_db_connection
 def get_db_connection():
     conn = mysql.connector.connect(
         host='localhost',
@@ -17,10 +17,7 @@ def get_db_connection():
     )
     return conn
 
-
-# =========================
-# Route to display available books
-# =========================
+#to display available books
 @browse_books_bp.route('/browse_books')
 def browse_books():
     conn = get_db_connection()
@@ -46,9 +43,7 @@ def browse_books():
     )
 
 
-# =========================
-# Route to display borrowed books
-# =========================
+#to display borrowed books
 @browse_books_bp.route('/borrowed_books')
 def borrowed_books():
     student_id = session.get("student_id")
@@ -76,9 +71,7 @@ def borrowed_books():
     return render_template("borrowed_books.html", borrowed_books=borrowed_books)
 
 
-# =========================
-# Route to borrow a book
-# =========================
+#to borrow a book
 @browse_books_bp.route('/borrow_book/<int:book_id>', methods=['POST'])
 def borrow_book(book_id):
     student_id = session.get("student_id")
@@ -93,22 +86,22 @@ def borrow_book(book_id):
     book = cursor.fetchone()
 
     if book and book[0] > 0:
-        # ✅ Decrease available copies by 1
+        #Decreasing available copies by 1
         cursor.execute("UPDATE books SET available_copies = available_copies - 1 WHERE book_id = %s", (book_id,))
 
-        # ✅ Borrow Book Logic
+        #Borrow Book
         cursor.execute("""
             INSERT INTO borrowed_books (student_id, book_id, borrow_date, due_date)
             VALUES (%s, %s, NOW(), DATE_ADD(NOW(), INTERVAL 14 DAY))
         """, (student_id, book_id))
 
-        # ✅ Log transaction
+        #Log transaction
         cursor.execute("""
             INSERT INTO transactions (student_id, book_id, action, borrow_date, due_date, transaction_date)  
             VALUES (%s, %s, 'borrow', NOW(), DATE_ADD(NOW(), INTERVAL 14 DAY), NOW())
         """, (student_id, book_id))
 
-        # ✅ Increment total_books_borrowed for the student
+        #Increment total_books_borrowed for the student
         cursor.execute("""
             UPDATE student
             SET total_books_borrowed = total_books_borrowed + 1
@@ -126,9 +119,7 @@ def borrow_book(book_id):
     return redirect(url_for('browse_books_bp.borrowed_books'))
 
 
-# =========================
-# Route to return a book
-# =========================
+#to return a book
 @browse_books_bp.route('/return_book/<int:borrow_id>', methods=['POST'])
 def return_book(borrow_id):
     student_id = session.get("student_id")
@@ -140,7 +131,6 @@ def return_book(borrow_id):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # ✅ Get book_id and due_date for the borrowed book
         cursor.execute("""
             SELECT book_id, due_date 
             FROM borrowed_books 
@@ -153,36 +143,35 @@ def return_book(borrow_id):
             return redirect(url_for("browse_books_bp.borrowed_books"))
 
         book_id = borrow_record["book_id"]
-        due_date = borrow_record["due_date"]  # ✅ Get existing due_date
+        due_date = borrow_record["due_date"]
 
-        # ✅ Update return_date in borrowed_books
         cursor.execute("""
             UPDATE borrowed_books 
             SET return_date = NOW() 
             WHERE borrow_id = %s
         """, (borrow_id,))
 
-        # ✅ Corrected: Increase available copies after return
+
         cursor.execute("""
             UPDATE books 
             SET available_copies = available_copies + 0  -- Fix: Increase by 1
             WHERE book_id = %s
         """, (book_id,))
 
-        # ✅ Increment total_books_returned for the student
+        #Increments total_books_returned for student
         cursor.execute("""
             UPDATE student
             SET total_books_returned = total_books_returned + 1
             WHERE student_id = %s
         """, (student_id,))
 
-        # ✅ Log return transaction with the correct due_date
+        #Log return transaction with correct due_date
         cursor.execute("""
             INSERT INTO transactions (student_id, book_id, action, borrow_date, due_date, return_date, transaction_date)
             VALUES (%s, %s, 'return', NOW(), %s, NOW(), NOW())  -- Store due_date and return_date correctly
         """, (student_id, book_id, due_date))
 
-        # ✅ Return Book Logic for returned_books
+        #Return Book Logic for returned_books
         cursor.execute("""
             INSERT INTO returned_books (student_id, book_id, return_date)
             VALUES (%s, %s, NOW())
@@ -192,7 +181,7 @@ def return_book(borrow_id):
         flash("Book returned successfully!", "success")
 
     except mysql.connector.Error as e:
-        conn.rollback()  # Rollback if error occurs
+        conn.rollback()
         flash(f"Database Error: {str(e)}", "danger")
 
     except Exception as e:

@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap">
 
     <style>
-        /* ✅ Main Body */
         body {
             font-family: 'Elsie Swash Caps', cursive;
             background: radial-gradient(circle at 50% 20%, #3b3b5f, #1a1a2e);
@@ -22,7 +21,6 @@
             min-height: 100vh;
         }
 
-        /* ✅ Admin Transactions with Glow */
         h2 {
             text-align: center;
             font-size: 28px;
@@ -31,7 +29,6 @@
             text-shadow: 0 0 18px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.9);
         }
 
-        /* ✅ Admin Name with Glow */
         .admin-name {
             text-align: center;
             font-size: 18px;
@@ -42,7 +39,7 @@
             text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
         }
 
-        /* ✅ Sidebar */
+        /* Sidebar */
         .sidebar {
             width: 250px;
             background: rgba(20, 20, 20, 0.9);
@@ -78,7 +75,7 @@
             border-left: 5px solid #00c9ff;
         }
 
-        /* ✅ Main Content */
+        /* Main Content */
         .content {
             margin-left: 250px;
             padding: 20px;
@@ -88,7 +85,7 @@
             align-items: flex-start;
         }
 
-        /* ✅ Outer Container */
+        /* Outer Container */
         .outer-container {
             width: 100%;
             max-width: 1200px;
@@ -100,7 +97,7 @@
             text-align: center;
         }
 
-        /* ✅ Search Bar Container */
+        /* Search Bar Container */
         .search-container {
             text-align: center;
             margin-bottom: 20px;
@@ -121,7 +118,7 @@
             border-color: #8e2de2;
         }
 
-        /* ✅ Table Container Centered */
+        /* Table Container */
         .table-container {
             width: 100%;
             max-width: 900px;
@@ -133,7 +130,7 @@
             overflow-x: auto;
         }
 
-        /* ✅ Table Styles */
+        /* Table */
         table {
             width: 80%;
             border-collapse: collapse;
@@ -156,7 +153,7 @@
             font-weight: bold;
         }
 
-        /* ✅ Row Effects */
+        /* Effects For Row */
         tr {
             transition: all 0.2s ease-in-out;
         }
@@ -170,14 +167,14 @@
             transform: scale(1.01);
         }
 
-        /* ✅ Button Container */
+        /* btn container */
         .btn-container {
             display: flex;
             justify-content: center;
             gap: 8px;
         }
 
-        /* ✅ Update Button */
+        /* update btn */
         .btn-update {
             background: #4CAF50;
             color: white;
@@ -191,7 +188,7 @@
             background: #388E3C;
         }
 
-        /* ✅ Delete Button */
+        /* delete btn */
         .btn-delete {
             background: #FF5722;
             color: white;
@@ -205,7 +202,7 @@
             background: #D84315;
         }
 
-        /* ✅ Borrow & Return Button Styles */
+        /* Badge */
         .badge-shipped {
             background: linear-gradient(135deg, #ff7eb3, #ff758c);
             color: white;
@@ -224,7 +221,7 @@
             box-shadow: 0 4px 10px rgba(80, 201, 195, 0.4);
         }
 
-        /* ✅ Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -253,28 +250,28 @@
 
 <body>
 
-    <!-- ✅ Sidebar -->
+    <!--Sidebar-->
     <div class="sidebar">
         <h2>📚 Admin Panel</h2>
-        <a href="{{ url_for('admin.admin_home') }}">🏠 Home</a>
-        <a href="{{ url_for('books_bp.books') }}">📚 Books</a>
-        <a href="{{ url_for('student.students_list_page') }}">👨‍🎓 Students List</a>
-        <a href="{{ url_for('transactions_bp.transactions_page') }}">🔄 Transactions</a>
+        <a href="{{ url_for('admin.admin_home') }}">Home</a>
+        <a href="{{ url_for('books_bp.books') }}">Books</a>
+        <a href="{{ url_for('student.students_list_page') }}">Students List</a>
+        <a href="{{ url_for('transactions_bp.transactions_page') }}">Transactions</a>
     </div>
 
-    <!-- ✅ Main Content -->
+    <!--Main Content-->
     <div class="content">
         <div class="outer-container">
             <div class="admin-name">Welcome, {{ admin.name }}!</div>
             <!-- ✅ Title and Admin Name -->
-            <h2>📚Students Transactions</h2>
+            <h2>Students Transactions</h2>
 
-            <!-- ✅ Search Bar -->
+            <!--Search Bar -->
             <div class="search-container">
                 <input type="text" id="searchInput" onkeyup="filterTransactions()" placeholder="Search transactions...">
             </div>
 
-            <!-- ✅ Transaction Table with Buttons -->
+            <!--transaction table with btn-->
             <div class="table-container">
                 <table id="transactionTable">
                     <thead>
@@ -327,7 +324,7 @@
         </div>
     </div>
 
-    <!-- ✅ JavaScript for Search -->
+    <!--JavaScript for Search-->
     <script>
         function filterTransactions() {
             let input, filter, table, tr, td, i, j, txtValue;

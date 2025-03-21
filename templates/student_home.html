@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Home</title>
 
-    <!-- External CSS & JS -->
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps&display=swap" rel="stylesheet">
@@ -14,7 +13,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
-        /* General Styles */
         body {
             background: radial-gradient(circle at 50% 20%, #3b3b5f, #1a1a2e);
             background-image: url("{{ url_for('static', filename='image/libglow3.jpg') }}");
@@ -71,7 +69,7 @@
             white-space: nowrap;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            gap: 15px; /* ✅ Added gap between books */
+            gap: 15px;
             padding-bottom: 10px;
         }
 
@@ -95,21 +93,21 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            margin-right: 15px; /* ✅ Added margin to prevent books from sticking */
+            margin-right: 15px;
         }
 
         .book-card h5,
         .book-card p {
-            color: black !important; /* ✅ Changed book text color to black */
+            color: black !important;
         }
         .book-card h5 {
                  color: black !important;
                  font-size: 1.2rem;
                  text-align: center;
-                 white-space: normal; /* ✅ Allows text to wrap */
-                 word-wrap: break-word; /* ✅ Ensures long words wrap */
-                 overflow-wrap: break-word; /* ✅ Helps in breaking long words */
-                 max-width: 90%; /* ✅ Prevents text from overflowing */
+                 white-space: normal;
+                 word-wrap: break-word;
+                 overflow-wrap: break-word;
+                 max-width: 90%;
        }
 
         .book-card:hover {
@@ -160,10 +158,10 @@
 
 <body>
 
-    <!-- ✅ Navbar -->
+    <!--Navbar -->
     <nav class="navbar navbar-expand-lg glass-navbar">
         <div class="container text-center">
-            <a class="navbar-brand custom-font" href="#" style="color: white;">📚 Student Panel</a>
+            <a class="navbar-brand custom-font" href="#" style="color: white;">📚 Student System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -178,13 +176,12 @@
         </div>
     </nav>
 
-    <!-- ✅ Student Dashboard -->
     <section class="hero-section text-center">
         <h1>Welcome, {{ student.name }} 📖</h1>
         <i class="fa fa-graduation-cap" style="font-size:3rem; margin-top:10px; color:#ffd700;"></i>
     </section>
 
-    <!-- ✅ Book Carousels (Dynamic by Language) -->
+    <!--Book Carousels (sorted by Language) -->
     {% for lang, books in books_by_language.items() %}
     <section class="container mt-5">
         <h2 class="text-center">{{ lang }} Books</h2>
@@ -210,12 +207,12 @@
     </section>
     {% endfor %}
 
-    <!-- ✅ Footer -->
+    <!--Footer-->
     <footer class="footer">
         &copy; 2025 Library Management System | Developed for Students
     </footer>
 
-    <!-- ✅ JavaScript for Carousel Navigation -->
+    <!--JavaScript for Carousel Navigation-->
     <script>
         function moveSlide(lang, direction) {
             let carousel = document.getElementById("carousel-" + lang);

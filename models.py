@@ -1,11 +1,11 @@
 import mysql.connector
-from database import get_db_connection  # ✅ Correct Import!
+from database import get_db_connection
 
 
 def create_users_table():
     conn = get_db_connection()
 
-    if conn:  # ✅ Ensure connection is established before proceeding
+    if conn:
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -22,4 +22,4 @@ def create_users_table():
         cursor.close()
         conn.close()
     else:
-        print("❌ Error: Could not connect to the database!")  # ✅ Print error message if connection fails
+        print("Error: Could not connect to the database!")

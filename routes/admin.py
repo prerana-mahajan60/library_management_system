@@ -1,21 +1,20 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session, request
-import mysql.connector  # ✅ Import MySQL connector
+import mysql.connector
 from flask import current_app
-from database import get_db_connection  # ✅ Import database connection function
+from database import get_db_connection
 
-# Define the admin blueprint
+#admin-blueprint
 admin_bp = Blueprint("admin", __name__, template_folder="templates")
 
-# =========================
+
 # Admin Home Route
-# =========================
 @admin_bp.route("/admin_home")
 def admin_home():
     current_app.logger.debug("Session in admin_home: " + str(dict(session)))
 
-    # ✅ Check if admin is logged in
+
     if "admin_id" not in session:
-        flash("❌ Please log in first!", "danger")
+        flash("Please log in first!", "danger")
         return redirect(url_for("auth.admin_login"))
 
     # ✅ Fetch books from the database
@@ -24,31 +23,27 @@ def admin_home():
     cursor.execute("SELECT book_id, book_name, author, year, available_copies, language, cover_image FROM books")
     books = cursor.fetchall()
 
-    # ✅ Debugging output for books
     print("Fetched books:")
     for book in books:
-        print(book)  # Ensuring `language` and other data is fetched correctly
+        print(book)
 
     cursor.close()
     connection.close()
 
-    # ✅ Include admin name and ID correctly
     admin = {
-        "id": session.get("admin_id"),  # Get admin_id from session
-        "name": session.get("admin_name")  # Get admin_name from session
+        "id": session.get("admin_id"),
+        "name": session.get("admin_name")
     }
 
-    # ✅ Render template with corrected admin data
     return render_template("admin_home.html", admin=admin, books=books, admin_id=admin["id"])
 
 
-# =========================
-# Admin Profile Route
-# =========================
+
+# Admin Profile
 @admin_bp.route("/admin/profile")
 def admin_profile():
     if "admin_id" not in session:
-        flash("❌ Please log in first!", "danger")
+        flash("Please log in first!", "danger")
         return redirect(url_for("auth.admin_login"))
 
     admin_id = session["admin_id"]
@@ -56,7 +51,6 @@ def admin_profile():
     cursor = connection.cursor(dictionary=True)
 
     try:
-        # ✅ Fetch admin data directly from `admin` table
         cursor.execute("""
             SELECT admin_id, admin_name, email, gender, total_books_added, total_books_removed, created_at
             FROM admin
@@ -65,10 +59,9 @@ def admin_profile():
         admin = cursor.fetchone()
 
         if not admin:
-            flash("❌ Admin not found!", "danger")
+            flash("Admin not found!", "danger")
             return redirect(url_for("admin.admin_home"))
 
-        # ✅ Dynamically assign profile image based on gender
         gender = admin.get("gender", "other").strip().lower()
         gender_image_map = {
             "male": "image/madmin.avif",
@@ -77,13 +70,12 @@ def admin_profile():
         }
         admin["profile_image"] = url_for("static", filename=gender_image_map.get(gender, "image/other.avif"))
 
-        # ✅ Refresh admin data after update (THIS LINE ADDED)
-        connection.commit()  # 👈 Isse latest data fetch hoga
+        connection.commit()
 
         return render_template("admin_profile.html", admin=admin)
 
     except Exception as e:
-        flash(f"❌ Error fetching admin data: {str(e)}", "danger")
+        flash(f" Error fetching admin data: {str(e)}", "danger")
         return redirect(url_for("admin.admin_home"))
 
     finally:
@@ -91,12 +83,11 @@ def admin_profile():
         connection.close()
 
 
-
-# =========================
+#admin_update_profile
 @admin_bp.route('/admin/update_profile', methods=['GET', 'POST'])
 def update_profile():
     if "admin_id" not in session:
-        return redirect(url_for('auth.admin_login'))  # Redirect if not logged in
+        return redirect(url_for('auth.admin_login'))
 
     admin_id = session["admin_id"]
     connection = get_db_connection()
@@ -108,19 +99,17 @@ def update_profile():
         gender = request.form['gender']
 
         try:
-            # ✅ Update admin_name, email & gender in `admin` table directly
             cursor.execute(
                 "UPDATE admin SET admin_name = %s, email = %s, gender = %s WHERE admin_id = %s",
                 (name, email, gender, admin_id)
             )
-            connection.commit()  # ✅ Commit all changes
+            connection.commit()
 
-            # ✅ Update session with new name if not blank
             session["admin_name"] = name if name else session.get("admin_name")
-            flash("✅ Profile updated successfully!", "success")
+            flash("Profile updated successfully!", "success")
 
         except Exception as e:
-            connection.rollback()  # ❌ Rollback if error occurs
+            connection.rollback()
             flash(f"⚠️ Error updating profile: {str(e)}", "danger")
 
         finally:
@@ -129,7 +118,7 @@ def update_profile():
 
         return redirect(url_for('admin.admin_profile'))
 
-    # ✅ Fetch admin details from `admin` table directly
+    # Fetching admin details
     cursor.execute("""
         SELECT admin_id, admin_name, email, gender
         FROM admin
@@ -144,7 +133,7 @@ def update_profile():
         flash("⚠️ Admin not found!", "warning")
         return redirect(url_for("auth.admin_login"))
 
-    # ✅ Assign profile image based on gender
+    # Assign profile image based on gender
     gender = admin.get("gender", "other").strip().lower()
     gender_image_map = {
         "male": "image/madmin.avif",
@@ -155,13 +144,12 @@ def update_profile():
 
     return render_template("update_admin_profile.html", admin=admin, profile_image=profile_image)
 
-# =========================
-# Delete Admin Profile Route
-# =========================
+
+#admin_delete_profile
 @admin_bp.route('/admin/delete_profile', methods=['POST'])
 def delete_profile():
     if "admin_id" not in session:
-        flash("❌ Please log in first!", "danger")
+        flash("Please log in first!", "danger")
         return redirect(url_for("auth.admin_login"))
 
     admin_id = session["admin_id"]
@@ -169,16 +157,14 @@ def delete_profile():
     cursor = connection.cursor()
 
     try:
-        # ✅ Delete the admin record directly from `admin` table
         cursor.execute("DELETE FROM admin WHERE admin_id = %s", (admin_id,))
         connection.commit()
 
-        # ✅ Clear session and redirect to login
         session.clear()
-        flash("✅ Your profile has been deleted successfully!", "success")
+        flash("Your profile has been deleted successfully!", "success")
 
     except Exception as e:
-        connection.rollback()  # ❌ Rollback if error occurs
+        connection.rollback()
         flash(f"⚠️ Error deleting profile: {str(e)}", "danger")
 
     finally:
@@ -187,12 +173,9 @@ def delete_profile():
 
     return redirect(url_for("auth.admin_login"))
 
-
-# =========================
-# Admin Logout Route
-# =========================
+#admin_logout
 @admin_bp.route("/admin_logout")
 def admin_logout():
     session.clear()
-    flash("✅ Logged out successfully!", "info")
+    flash("Logged out successfully!", "info")
     return redirect(url_for("auth.admin_login"))

@@ -1,10 +1,10 @@
 import mysql.connector
 from flask import Blueprint, render_template, request, redirect, url_for, flash,session
 
-# Set up the Blueprint for books routes
+#books_blueprint
 books_bp = Blueprint('books_bp', __name__, template_folder="templates")
 
-# Database connection function
+#get_db_connection
 def get_db_connection():
     conn = mysql.connector.connect(
         host='localhost',  # Your MySQL host (usually localhost)
@@ -15,22 +15,22 @@ def get_db_connection():
     )
     return conn
 
-# Route to display books
+#to display books
 @books_bp.route('/books', methods=['GET'])
 def books():
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)  # Using dictionary=True to get results as dictionaries
+    cursor = conn.cursor(dictionary=True)
 
-    # Fetch books from the database
+    # Fetching books from database
     cursor.execute("""
         SELECT * FROM books ORDER BY language, book_name
     """)
     books = cursor.fetchall()
 
-    # Group books by language
+    #sort books by language
     books_by_language = {}
     for book in books:
-        lang = book['language']  # Access columns by name (dictionary keys)
+        lang = book['language']
         if lang not in books_by_language:
             books_by_language[lang] = []
         books_by_language[lang].append(book)
@@ -39,9 +39,7 @@ def books():
     return render_template('books.html', books_by_language=books_by_language, role="Admin")
 
 
-# =========================
-# Route to add a new book (Admin only)
-# =========================
+#to add a new book (Admin only)
 @books_bp.route('/books/add', methods=['POST'])
 def add_book():
     book_name = request.form['book_name']
@@ -49,18 +47,18 @@ def add_book():
     year = request.form['year']
     available_copies = request.form['available_copies']
     language = request.form['language']
-    admin_id = session.get("admin_id")  # ✅ Admin ID from session
+    admin_id = session.get("admin_id")
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # ✅ Add the new book to the books table
+    #Adding new book
     cursor.execute("""
         INSERT INTO books (book_name, author, year, available_copies, language)
         VALUES (%s, %s, %s, %s, %s)
     """, (book_name, author, year, available_copies, language))
 
-    # ✅ Update total_books_added for the admin
+    #Updating total_books_added
     cursor.execute("""
         UPDATE admin
         SET total_books_added = total_books_added + 1
@@ -71,23 +69,20 @@ def add_book():
     cursor.close()
     conn.close()
 
-    flash('✅ Book added successfully!', 'success')
+    flash('Book added successfully!', 'success')
     return redirect(url_for('books_bp.books'))
 
-
-# =========================
-# Route to delete a book (Admin only)
-# =========================
+#Route to delete a book (Admin only)
 @books_bp.route('/books/delete/<int:book_id>', methods=['GET'])
 def delete_book(book_id):
-    admin_id = session.get("admin_id")  # ✅ Admin ID from session
+    admin_id = session.get("admin_id")
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # ✅ Delete the book from the books table
+    # Delete the book
     cursor.execute("DELETE FROM books WHERE book_id = %s", (book_id,))
 
-    # ✅ Update total_books_removed for the admin
+    # Update total_books_removed
     cursor.execute("""
         UPDATE admin
         SET total_books_removed = total_books_removed + 1
@@ -98,13 +93,11 @@ def delete_book(book_id):
     cursor.close()
     conn.close()
 
-    flash('✅ Book removed successfully!', 'success')
+    flash('Book removed successfully!', 'success')
     return redirect(url_for('books_bp.books'))
 
 
-# =========================
-# Route to update book details (Admin only)
-# =========================
+#to update book details (Admin only)
 @books_bp.route('/books/update/<int:book_id>', methods=['GET', 'POST'])
 def update_book(book_id):
     conn = get_db_connection()
@@ -117,7 +110,7 @@ def update_book(book_id):
         available_copies = request.form['available_copies']
         language = request.form['language']
 
-        # ✅ Update book details
+        #Update book details
         cursor.execute("""
             UPDATE books
             SET book_name = %s, author = %s, year = %s, available_copies = %s, language = %s
@@ -125,10 +118,9 @@ def update_book(book_id):
         """, (book_name, author, year, available_copies, language, book_id))
 
         conn.commit()
-        flash('✅ Book updated successfully!', 'success')
+        flash('Book updated successfully!', 'success')
         return redirect(url_for('books_bp.books'))
 
-    # ✅ Get the existing details for the book
     cursor.execute("SELECT * FROM books WHERE book_id = %s", (book_id,))
     book = cursor.fetchone()
 

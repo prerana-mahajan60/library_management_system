@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books - Library Management</title>
 
-    <!-- Bootstrap, Google Fonts, Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap" rel="stylesheet">
 
     <style>
-        /* Global Styling */
         * { font-family: 'Elsie Swash Caps', cursive; color: white; }
         body {
             background: url("{{ url_for('static', filename='image/lib3.jpg') }}") no-repeat center center fixed;
@@ -21,7 +19,7 @@
             display: flex;
         }
 
-        /* Sidebar */
+        /*sidebar*/
         .sidebar {
             width: 250px;
             background: rgba(0, 0, 0, 0.6);
@@ -39,14 +37,14 @@
         }
         .sidebar a:hover { background: rgba(255, 255, 255, 0.3); }
 
-        /* Main Content */
+
         .main-content {
             margin-left: 260px;
             padding: 20px;
             width: calc(100% - 260px);
         }
 
-        /* Book Cards Slider */
+        /* book cards slider */
         .slider-container {
             overflow: hidden;
             position: relative;
@@ -60,7 +58,7 @@
             align-items: center;
         }
 
-        /* ✅ Book Card */
+        /* Book Card */
         .book-card {
             background: rgba(255, 255, 255, 0.1) url("{{ url_for('static', filename='image/book1.jpg') }}") no-repeat center center;
             background-size: cover;
@@ -89,6 +87,7 @@
             padding: 0;
             color:black;
         }
+
         .remove-btn
         {
              background:#c02333;
@@ -106,7 +105,7 @@
             background:#dd4e5c;
         }
 
-        /* Slider Navigation Buttons */
+        /* slider-Navigation btn */
         .slider-btn {
             position: absolute;
             top: 50%;
@@ -124,7 +123,7 @@
         .prev-btn { left: 5px; }
         .next-btn { right: 5px; }
 
-        /* Admin Controls */
+        /* admin controls */
         .admin-controls {
             background: rgba(0, 0, 0, 0.6);
             padding: 20px;
@@ -136,7 +135,7 @@
             background-size: cover;
            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
-     /* Add Book Button */
+     /* add book btn */
         .btn-add-book {
              background: linear-gradient(45deg,   #031121,rgb(148, 148, 146));
             color: white;
@@ -156,7 +155,7 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
+    <!--Sidebar-->
     <div class="sidebar">
         <a href="{{ url_for('admin.admin_home') }}"><i class="fa fa-home"></i> Home</a>
         <a href="{{ url_for('books_bp.books') }}"><i class="fa fa-book"></i> Manage Books</a>
@@ -164,11 +163,11 @@
         <a href="{{ url_for('admin.admin_logout') }}"><i class="fa fa-sign-out-alt"></i> Logout</a>
     </div>
 
-    <!-- Main Content -->
+    <!--Main Content-->
     <div class="main-content">
         <h2 class="text-white text-center mb-4">📚 Available Books</h2>
 
-        <!-- ✅ Language-Based Book Carousels -->
+        <!--language-based on book carousels which sort them by language-->
         {% for lang, books in books_by_language.items() %}
         <h3 class="text-white text-center mt-4">{{ lang }} Books</h3>
         <div class="slider-container">
@@ -191,7 +190,7 @@
         </div>
         {% endfor %}
 
-        <!-- Admin Controls (Only for Admin) -->
+        <!-- Admin Controls-->
         {% if role == "Admin" %}
         <div class="admin-controls">
             <h4 class="text-black text-center">Add New Book</h4>
@@ -211,6 +210,7 @@
         {% endif %}
     </div>
 
+  <!--javascript-->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Select all sliders

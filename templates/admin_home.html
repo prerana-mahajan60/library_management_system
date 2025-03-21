@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Home</title>
 
-    <!-- External CSS & JS -->
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps&display=swap" rel="stylesheet">
@@ -14,7 +13,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
-        /* General Styles */
         body {
             background: radial-gradient(circle at 50% 20%, #3b3b5f, #1a1a2e);
             background-image: url("{{ url_for('static', filename='image/libglow3.jpg') }}");
@@ -26,7 +24,7 @@
             font-family: 'Elsie Swash Caps', cursive;
         }
 
-        /* Navbar */
+        /*Navbar*/
         .glass-navbar {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -41,7 +39,7 @@
         }
 
         .navbar-nav .nav-item {
-            margin-right: 40px; /* Increased spacing between navbar items */
+            margin-right: 40px;
         }
 
         .navbar-nav .nav-item .nav-link {
@@ -49,13 +47,12 @@
             font-size: 1.2rem;
         }
 
-        /* Hero Section */
         .hero-section {
             text-align: center;
             padding: 50px 20px;
         }
 
-        /* Carousel */
+        /*Carousel*/
         .carousel-container {
             position: relative;
             width: 90%;
@@ -71,7 +68,7 @@
             white-space: nowrap;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            gap: 15px; /* Adds spacing between book cards */
+            gap: 15px;
             padding-bottom: 10px;
         }
 
@@ -81,8 +78,8 @@
 
         .book-card {
             background: rgba(255, 255, 255, 0.1)
-                url("{{ url_for('static', filename='image/book1.jpg') }}")
-                no-repeat center center;
+            url("{{ url_for('static', filename='image/book1.jpg') }}")
+            no-repeat center center;
             background-size: cover;
             border-radius: 25px;
             padding: 20px;
@@ -99,12 +96,11 @@
             margin: 10px;
         }
 
-        /* Allow text to wrap instead of forcing one line */
         .book-card h5,
         .book-card p {
             white-space: normal;
             word-wrap: break-word;
-            color: black; /* Book text color */
+            color: black;
         }
 
         .book-card:hover {
@@ -134,7 +130,7 @@
             right: 0;
         }
 
-        /* Footer */
+        /*Footer*/
         .footer {
             text-align: center;
             padding: 20px;
@@ -152,7 +148,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg glass-navbar">
         <div class="container text-center">
-            <a class="navbar-brand custom-font" href="#" style="color: white;">📚 Admin Panel</a>
+            <a class="navbar-brand custom-font" href="#" style="color: white;">📚 Admin System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -167,13 +163,12 @@
         </div>
     </nav>
 
-    <!-- Admin Dashboard -->
     <section class="hero-section text-center">
         <h1>Welcome, {{ admin.name }} 👑</h1>
         <i class="fa fa-university" style="font-size:3rem; margin-top:10px; color:#ffd700;"></i>
     </section>
 
-    <!-- Book Carousels -->
+    <!--Book Carousels-->
     {% set languages = ["English", "Hindi", "Marathi"] %}
     {% for lang in languages %}
     <section class="container mt-5">
@@ -200,12 +195,11 @@
     </section>
     {% endfor %}
 
-    <!-- Footer -->
     <footer class="footer">
         &copy; 2025 Library Management System | Developed by Admin
     </footer>
 
-    <!-- JavaScript for Carousel Navigation -->
+    <!--JavaScript for Carousel-->
     <script>
         function moveSlide(lang, direction) {
             let carousel = document.getElementById("carousel-" + lang);

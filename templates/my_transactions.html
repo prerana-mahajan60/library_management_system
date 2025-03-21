@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Elsie+Swash+Caps:wght@400;900&display=swap">
 
     <style>
-        /* ✅ Main Body */
         body {
             font-family: 'Elsie Swash Caps', cursive;
             background: radial-gradient(circle at 50% 20%, #3b3b5f, #1a1a2e);
@@ -22,7 +21,6 @@
             min-height: 100vh;
         }
 
-         /* ✅ My Transactions with Glow */
          h2 {
                  text-align: center;
                  font-size: 28px;
@@ -31,7 +29,6 @@
                  text-shadow: 0 0 18px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.9);
            }
 
-          /* ✅ Student Name with Glow */
          .student-name {
                 text-align: center;
                 font-size: 18px;
@@ -44,7 +41,7 @@
 
 
 
-        /* ✅ Sidebar */
+        /* Sidebar */
         .sidebar {
             width: 250px;
             background: rgba(20, 20, 20, 0.9);
@@ -80,7 +77,7 @@
             border-left: 5px solid #00c9ff;
         }
 
-        /* ✅ Main Content */
+        /* Main Content */
         .content {
             margin-left: 250px;
             padding: 20px;
@@ -90,7 +87,7 @@
             align-items: flex-start;
         }
 
-        /* ✅ Outer Container */
+        /* Outer Container */
         .outer-container {
             width: 100%;
             max-width: 1200px;
@@ -102,7 +99,7 @@
             text-align: center;
         }
 
-        /* ✅ Search Bar Container */
+        /* Search Bar Container */
         .search-container {
             text-align: center;
             margin-bottom: 20px;
@@ -123,7 +120,7 @@
             border-color: #8e2de2;
         }
 
-        /* ✅ Table Container Centered */
+        /* Table Container */
         .table-container {
             width: 100%;
             max-width: 900px;
@@ -136,7 +133,7 @@
             margin-left:-6px;
         }
 
-        /* ✅ Table Styles */
+        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -158,7 +155,7 @@
             font-weight: bold;
         }
 
-        /* ✅ Row Effects */
+        /* Effects For Row */
         tr {
             transition: all 0.2s ease-in-out;
         }
@@ -172,7 +169,7 @@
             transform: scale(1.01);
         }
 
-        /* ✅ Badge Styles */
+        /* Badge */
         .badge-shipped {
             background-color: #28a745;
             color: white;
@@ -203,7 +200,7 @@
             display: inline-block;
         }
 
-        /* ✅ Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -232,28 +229,27 @@
 
 <body>
 
-    <!-- ✅ Sidebar -->
+    <!--Sidebar-->
     <div class="sidebar">
         <h2>📚 Student Panel</h2>
-        <a href="{{ url_for('student.student_home') }}">🏠 Home</a>
-        <a href="{{ url_for('browse_books_bp.browse_books') }}">📖 Browse Books</a>
-        <a href="{{ url_for('transactions_bp.my_transactions') }}">📜 My Transactions</a>
-        <a href="{{ url_for('student.student_logout') }}">🚪 Logout</a>
+        <a href="{{ url_for('student.student_home') }}">Home</a>
+        <a href="{{ url_for('browse_books_bp.browse_books') }}">Browse Books</a>
+        <a href="{{ url_for('transactions_bp.my_transactions') }}">My Transactions</a>
     </div>
 
-    <!-- ✅ Main Content -->
+    <!--Main Content-->
     <div class="content">
         <div class="outer-container">
-            <!-- ✅ Title and Student Name -->
-            <h2>📜 My Transactions</h2>
+
+            <h2>My Transactions</h2>
             <div class="student-name">Welcome, {{ student_name }}!</div>
 
-            <!-- ✅ Search Bar -->
+            <!--Search Bar-->
             <div class="search-container">
                 <input type="text" id="searchInput" onkeyup="filterTransactions()" placeholder="Search transactions...">
             </div>
 
-            <!-- ✅ Table Properly Centered -->
+            <!-- Table Container -->
             <div class="table-container">
                 <table id="transactionTable">
                     <thead>
@@ -293,7 +289,7 @@
         </div>
     </div>
 
-    <!-- ✅ JavaScript for Search -->
+    <!--JavaScript for Searching-->
     <script>
         function filterTransactions() {
             let input, filter, table, tr, td, i, j, txtValue;

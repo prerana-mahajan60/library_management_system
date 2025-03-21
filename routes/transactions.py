@@ -1,15 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 import mysql.connector
-from config import get_db_connection  # ✅ Ensure `config.py` exists with `get_db_connection()`
+from config import get_db_connection
 
 transactions_bp = Blueprint("transactions_bp", __name__, template_folder="templates")
 
-# ✅ Transactions Page (Admin Only)
+#Transactions Page (Admin Handle The students Transactions)
 @transactions_bp.route("/transactions")
 def transactions_page():
-    if session.get("role") != "Admin":  # ✅ Prevent KeyError
+    if session.get("role") != "Admin":
         flash("Unauthorized access!", "danger")
-        return redirect(url_for("auth_bp.student_login"))  # ✅ Ensure correct login redirection
+        return redirect(url_for("auth_bp.student_login"))
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -39,7 +39,7 @@ def transactions_page():
         cursor.execute(query)
         transactions = cursor.fetchall()
 
-        admin_name = session.get("admin_name", "Admin")  # ✅ Fetch admin name
+        admin_name = session.get("admin_name", "Admin")
 
     except mysql.connector.Error as err:
         flash(f"Database error: {err}", "danger")
@@ -48,11 +48,10 @@ def transactions_page():
         cursor.close()
         conn.close()
 
-    # ✅ Pass admin_name properly
     return render_template("transactions.html", transactions=transactions, admin={"name": admin_name})
 
 
-# ✅ Update a Transaction (Admin Only)
+#Update Transactions by Admin
 @transactions_bp.route("/transactions/update/<int:transaction_id>", methods=["GET"])
 def update_transaction_page(transaction_id):
     if session.get("role") != "Admin":
@@ -97,7 +96,7 @@ def update_transaction_page(transaction_id):
     return render_template("update_transactions.html", transaction=transaction)
 
 
-# ✅ Update Transaction (Auto-Set Return Date for Return Action)
+#Update Transactions (Auto-Set Return Date for Return Action)
 @transactions_bp.route("/transactions/update/<int:transaction_id>", methods=["POST"])
 def update_transaction(transaction_id):
     if session.get("role") != "Admin":
@@ -111,7 +110,7 @@ def update_transaction(transaction_id):
 
     try:
         if action == "borrow":
-            # 🔹 Auto-set due_date to 14 days if action is "borrow"
+            #Auto-set due_date to 14 days if action is "borrow"
             cursor.execute(
                 """
                 UPDATE transactions 
@@ -123,7 +122,7 @@ def update_transaction(transaction_id):
                 (action, transaction_id),
             )
         elif action == "return":
-            # 🔹 Set return_date to NOW() if action is "return"
+            #Set return_date to NOW() if action is "return"
             cursor.execute(
                 """
                 UPDATE transactions 
@@ -134,7 +133,7 @@ def update_transaction(transaction_id):
                 (action, transaction_id),
             )
 
-            # 🔹 Update the returned_books table with the return date for this transaction
+            # Update the returned_books
             cursor.execute(
                 """
                 INSERT INTO returned_books (student_id, book_id, return_date)
@@ -150,16 +149,16 @@ def update_transaction(transaction_id):
 
     except mysql.connector.Error as err:
         flash(f"Error updating transaction: {err}", "danger")
-        print(f"❌ Error updating transaction: {err}")  # ✅ Debugging
+        print(f"Error updating transaction: {err}")
 
     finally:
         cursor.close()
         conn.close()
 
-    return redirect(url_for("transactions_bp.transactions_page"))  # ✅ Refresh page
+    return redirect(url_for("transactions_bp.transactions_page"))
 
 
-# ✅ Delete a Transaction (Admin Only)
+#Delete  Transactions by admin
 @transactions_bp.route("/transactions/delete/<int:transaction_id>", methods=["POST"])
 def delete_transaction(transaction_id):
     if session.get("role") != "Admin":
@@ -170,7 +169,6 @@ def delete_transaction(transaction_id):
     cursor = conn.cursor()
 
     try:
-        # 🔹 Check if transaction exists before deleting
         cursor.execute("SELECT transaction_id FROM transactions WHERE transaction_id = %s", (transaction_id,))
         existing_transaction = cursor.fetchone()
         if not existing_transaction:
@@ -183,7 +181,7 @@ def delete_transaction(transaction_id):
         flash("Transaction deleted successfully!", "success")
     except mysql.connector.Error as err:
         flash(f"Error deleting transaction: {err}", "danger")
-        print(f"❌ Error deleting transaction: {err}")  # ✅ Debugging
+        print(f"Error deleting transaction: {err}")
     finally:
         cursor.close()
         conn.close()
@@ -191,10 +189,9 @@ def delete_transaction(transaction_id):
     return redirect(url_for("transactions_bp.transactions_page"))
 
 
-
 #------------------------------------------------For_students-------------------------------------------------
 
-# for student_transactions....
+#for student_transactions....(students transactions which is on student system of logged-student)
 @transactions_bp.route("/my_transactions")
 def my_transactions():
     student_id = session.get("student_id")
@@ -206,7 +203,7 @@ def my_transactions():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # ✅ Fetch unique transactions for the logged-in student
+        # Fetching unique transactions for logged-in student
         cursor.execute("""
             SELECT DISTINCT t.transaction_id, 
                    b.book_name, 
@@ -223,7 +220,7 @@ def my_transactions():
 
         transactions = cursor.fetchall()
 
-        # ✅ Fetch student name to display in my_transactions.html
+        #Fetching student name
         cursor.execute("SELECT name FROM student WHERE student_id = %s", (student_id,))
         student = cursor.fetchone()
         student_name = student["name"] if student else "Student"
@@ -237,5 +234,4 @@ def my_transactions():
         cursor.close()
         conn.close()
 
-    # ✅ Pass student_name to the template
     return render_template("my_transactions.html", transactions=transactions, student_name=student_name)
