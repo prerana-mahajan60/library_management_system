@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Elsie Swash Caps', cursive;
-            background-image: url("{{ url_for('static', filename='image/lib3.jpg') }}");
+            background-image: url("{{ url_for('static', filename='image/mylib.jpg') }}");
             background-position: center center;
             background-size: cover;
             background-repeat: no-repeat;
@@ -38,7 +38,6 @@
             color: #fff;
             margin-top: -1px;
             margin-bottom: 15px;
-            font-style: italic;
             text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
         }
 
@@ -93,10 +92,10 @@
             width: 100%;
             max-width: 1200px;
             margin: 40px auto;
-            padding: 20px;
-            background: rgba(135, 206, 250, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 28px;
+            background: rgba(2, 71, 114, 0.356);
+            border-radius: 30px;
+            box-shadow: 0 8px 20px rgba(249, 242, 242, 0.785);
             text-align: center;
         }
 
@@ -121,24 +120,12 @@
             border-color: #8e2de2;
         }
 
-        /* Table Container */
-        .table-container {
-            width: 100%;
-            max-width: 900px;
-            background-color: rgba(240, 248, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin: 25px auto;
-            overflow-x: auto;
-        }
-
         /* Table */
         table {
             width: 80%;
             border-collapse: collapse;
             background-color: rgba(240, 248, 255, 0.9);
-            border-radius: 18px;
+            border-radius: 28px;
             overflow: hidden;
 
         }
@@ -207,7 +194,7 @@
 
         /* Badge */
         .badge-shipped {
-            background: linear-gradient(135deg, #ff7eb3, #ff758c);
+            background-color: #28a745;
             color: white;
             padding: 6px 12px;
             border-radius: 25px;
@@ -216,7 +203,7 @@
         }
 
         .badge-delivered {
-            background: linear-gradient(135deg, #50c9c3, #96deda);
+            background-color: #17a2b8;
             color: white;
             padding: 6px 12px;
             border-radius: 25px;
@@ -266,7 +253,7 @@
     <div class="content">
         <div class="outer-container">
             <div class="admin-name">Welcome, {{ admin.name }}!</div>
-            <!-- ✅ Title and Admin Name -->
+            <!--Title and Admin Name -->
             <h2>Students Transactions</h2>
 
             <!--Search Bar -->
@@ -275,7 +262,7 @@
             </div>
 
             <!--transaction table with btn-->
-            <div class="table-container">
+            <div>
                 <table id="transactionTable">
                     <thead>
                         <tr>

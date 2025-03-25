@@ -12,43 +12,67 @@
     <style>
         * { font-family: 'Elsie Swash Caps', cursive; color: white; }
         body {
-            background: url("{{ url_for('static', filename='image/lib3.jpg') }}") no-repeat center center fixed;
+            background: url("{{ url_for('static', filename='image/mylib.jpg') }}") no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             padding: 0;
             display: flex;
         }
 
-        /*sidebar*/
+        /* Sidebar */
         .sidebar {
             width: 250px;
-            background: rgba(0, 0, 0, 0.6);
             height: 100vh;
-            padding-top: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
             position: fixed;
-            backdrop-filter: blur(10px);
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            align-items:center;
+        }
+        .sidebar h2 {
+            color: #f1f1f1;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align:center;
+            text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
         }
         .sidebar a {
             display: block;
-            padding: 15px;
-            text-decoration: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+            text-align:center;
+            font-size:18px;
         }
-        .sidebar a:hover { background: rgba(255, 255, 255, 0.3); }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-
+        /* Main Content */
         .main-content {
-            margin-left: 260px;
+            margin-left: 270px;
             padding: 20px;
-            width: calc(100% - 260px);
+            width: calc(100% - 270px);
+        }
+        .main-content h2
+        {
+             text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
         }
 
-        /* book cards slider */
+
+        /* Book Cards Slider */
         .slider-container {
             overflow: hidden;
             position: relative;
             width: 100%;
+            padding-bottom: 15px;
+            padding-top: 15px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         .slider {
@@ -56,6 +80,7 @@
             transition: transform 0.5s ease-in-out;
             gap: 18px;
             align-items: center;
+
         }
 
         /* Book Card */
@@ -85,12 +110,11 @@
         .book-card h5, .book-card p {
             margin: 5px 0;
             padding: 0;
-            color:black;
+            color: black;
         }
 
-        .remove-btn
-        {
-             background:#c02333;
+        .remove-btn {
+            background: #c02333;
             border: none;
             padding: 6px 12px;
             border-radius: 20px;
@@ -99,13 +123,13 @@
             cursor: pointer;
             transition: 0.3s;
             font-family: 'Elsie Swash Caps', cursive;
-            text-decoration:none;
+            text-decoration: none;
         }
         .remove-btn:hover {
-            background:#dd4e5c;
+            background: #dd4e5c;
         }
 
-        /* slider-Navigation btn */
+        /* Slider Navigation btn*/
         .slider-btn {
             position: absolute;
             top: 50%;
@@ -123,7 +147,7 @@
         .prev-btn { left: 5px; }
         .next-btn { right: 5px; }
 
-        /* admin controls */
+        /* Admin Controls */
         .admin-controls {
             background: rgba(0, 0, 0, 0.6);
             padding: 20px;
@@ -133,11 +157,13 @@
             margin-top: 20px;
             background: rgba(0, 0, 0, 0.6) url("{{ url_for('static', filename='image/book9.jpg') }}") no-repeat center center;
             background-size: cover;
-           box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            margin-top:30px;
         }
-     /* add book btn */
+
+        /* Add Book Button */
         .btn-add-book {
-             background: linear-gradient(45deg,   #031121,rgb(148, 148, 146));
+            background: linear-gradient(45deg, #031121, rgb(148, 148, 146));
             color: white;
             font-size: 18px;
             font-weight: bold;
@@ -145,28 +171,40 @@
             border-radius: 15px;
             border: none;
             transition: 0.3s;
-}
+        }
         .btn-add-book:hover {
-         background: linear-gradient(45deg, rgb(148, 148, 146), #031121);
+            background: linear-gradient(45deg, rgb(148, 148, 146), #031121);
             box-shadow: 0 0 15px rgb(106, 102, 102);
+        }
+        .title{
+              padding-top:50px;
+              text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
         }
 
     </style>
 </head>
 <body>
 
-    <!--Sidebar-->
+    <!-- Sidebar -->
     <div class="sidebar">
-        <a href="{{ url_for('admin.admin_home') }}"><i class="fa fa-home"></i> Home</a>
-        <a href="{{ url_for('books_bp.books') }}"><i class="fa fa-book"></i> Manage Books</a>
-        <a href="{{ url_for('transactions_bp.transactions_page') }}"><i class="fa fa-exchange-alt"></i> Students Transactions</a>
+        <h2>Admin System</h2>
+        <a href="{{ url_for('admin.admin_home') }}" class="{% if request.endpoint == 'admin.admin_home' %}active{% endif %}">
+             Home
+        </a>
+        <a href="{{ url_for('books_bp.books') }}">
+            Manage Books
+        </a>
+        <a href="{{ url_for('transactions_bp.transactions_page') }}" class="{% if request.endpoint == 'transactions_bp.transactions_page' %}active{% endif %}">
+           Students Transactions
+        </a>
+        <a href="{{ url_for('student.students_list_page') }}">Students List</a>
     </div>
 
-    <!--Main Content-->
+    <!-- Main Content -->
     <div class="main-content">
-        <h2 class="text-white text-center mb-4">📚 Available Books</h2>
+        <h2 class="text-white text-center mb-4"><b>📚 Available Books Session</b></h2>
 
-        <!--language-based on book carousels which sort them by language-->
+        <!-- Language-based Book Carousels -->
         {% for lang, books in books_by_language.items() %}
         <h3 class="text-white text-center mt-4">{{ lang }} Books</h3>
         <div class="slider-container">
@@ -189,10 +227,12 @@
         </div>
         {% endfor %}
 
-        <!-- Admin Controls-->
+        <!-- Admin Controls -->
         {% if role == "Admin" %}
+          <div class="title">
+              <h2 class="text-white text-center mt-5 mb-3"><b style="margin-top:60px">📚 Add New Book Session</b></h2>
+         </div>
         <div class="admin-controls">
-            <h4 class="text-black text-center">Add New Book</h4>
             <form action="{{ url_for('books_bp.add_book') }}" method="POST">
                 <input type="text" name="book_name" placeholder="Book Name" class="form-control mb-2" required>
                 <input type="text" name="author" placeholder="Author" class="form-control mb-2" required>
@@ -209,35 +249,35 @@
         {% endif %}
     </div>
 
-  <!--javascript-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Select all sliders
-        document.querySelectorAll(".slider-container").forEach((container) => {
-            const slider = container.querySelector(".slider");
-            const prevBtn = container.querySelector(".prev-btn");
-            const nextBtn = container.querySelector(".next-btn");
+    <!-- JavaScript for Slider -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all sliders
+            document.querySelectorAll(".slider-container").forEach((container) => {
+                const slider = container.querySelector(".slider");
+                const prevBtn = container.querySelector(".prev-btn");
+                const nextBtn = container.querySelector(".next-btn");
 
-            let scrollAmount = 0;
-            const scrollStep = 250; // Adjust how much it scrolls per click
+                let scrollAmount = 0;
+                const scrollStep = 250; // Adjust how much it scrolls per click
 
-            // Forward slide
-            nextBtn.addEventListener("click", function () {
-                if (scrollAmount <= slider.scrollWidth - container.offsetWidth) {
-                    scrollAmount += scrollStep;
-                    slider.style.transform = `translateX(-${scrollAmount}px)`;
-                }
-            });
+                // Forward slide
+                nextBtn.addEventListener("click", function () {
+                    if (scrollAmount <= slider.scrollWidth - container.offsetWidth) {
+                        scrollAmount += scrollStep;
+                        slider.style.transform = `translateX(-${scrollAmount}px)`;
+                    }
+                });
 
-            // Backward slide
-            prevBtn.addEventListener("click", function () {
-                if (scrollAmount > 0) {
-                    scrollAmount -= scrollStep;
-                    slider.style.transform = `translateX(-${scrollAmount}px)`;
-                }
+                // Backward slide
+                prevBtn.addEventListener("click", function () {
+                    if (scrollAmount > 0) {
+                        scrollAmount -= scrollStep;
+                        slider.style.transform = `translateX(-${scrollAmount}px)`;
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 </body>
 </html>

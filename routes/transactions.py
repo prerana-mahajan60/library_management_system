@@ -11,23 +11,30 @@ def transactions_page():
         flash("Unauthorized access!", "danger")
         return redirect(url_for("auth_bp.student_login"))
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
     try:
         query = """
-        SELECT DISTINCT
+        SELECT 
             t.transaction_id, 
             t.student_id,  
             COALESCE(s.name, 'Unknown Student') AS student_name,  
             COALESCE(b.book_name, 'Unknown Book') AS book_title,  
             t.action, 
             t.borrow_date, 
-            t.due_date, 
-            (SELECT return_date 
-             FROM returned_books rb 
-             WHERE rb.student_id = t.student_id AND rb.book_id = t.book_id
-             LIMIT 1) AS return_date,
+            CASE 
+                WHEN t.action = 'borrow' THEN t.due_date
+                ELSE 'N/A'
+            END AS due_date,
+            CASE 
+                WHEN t.action = 'return' THEN 
+                    (SELECT return_date 
+                     FROM returned_books rb 
+                     WHERE rb.student_id = t.student_id AND rb.book_id = t.book_id
+                     LIMIT 1)
+                ELSE 'N/A'
+            END AS return_date,
             t.transaction_date
         FROM transactions t
         LEFT JOIN student s ON t.student_id = s.student_id  
@@ -44,7 +51,7 @@ def transactions_page():
         transactions = []
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
 
     return render_template("transactions.html", transactions=transactions, admin={"name": admin_name})
 
@@ -56,8 +63,8 @@ def update_transaction_page(transaction_id):
         flash("Unauthorized access!", "danger")
         return redirect(url_for("transactions_bp.transactions_page"))
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
     try:
         cursor.execute(
@@ -85,7 +92,7 @@ def update_transaction_page(transaction_id):
         transaction = None
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
 
     if not transaction:
         flash("Transaction not found!", "danger")
@@ -103,8 +110,8 @@ def update_transaction(transaction_id):
 
     action = request.form.get("action")
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
     try:
         if action == "borrow":
@@ -125,7 +132,8 @@ def update_transaction(transaction_id):
                 """
                 UPDATE transactions 
                 SET action = %s, 
-                    transaction_date = NOW()
+                    transaction_date = NOW(),
+                    due_date = NULL
                 WHERE transaction_id = %s
                 """,
                 (action, transaction_id),
@@ -154,7 +162,7 @@ def update_transaction(transaction_id):
                     (transaction_id,),
                 )
 
-        conn.commit()
+        connection.commit()
         flash("Transaction updated successfully!", "success")
 
     except mysql.connector.Error as err:
@@ -163,7 +171,7 @@ def update_transaction(transaction_id):
 
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
 
     return redirect(url_for("transactions_bp.transactions_page"))
 
@@ -175,8 +183,8 @@ def delete_transaction(transaction_id):
         flash("Unauthorized access!", "danger")
         return redirect(url_for("transactions_bp.transactions_page"))
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
     try:
         cursor.execute("SELECT transaction_id FROM transactions WHERE transaction_id = %s", (transaction_id,))
@@ -186,7 +194,7 @@ def delete_transaction(transaction_id):
             return redirect(url_for("transactions_bp.transactions_page"))
 
         cursor.execute("DELETE FROM transactions WHERE transaction_id = %s", (transaction_id,))
-        conn.commit()
+        connection.commit()
 
         flash("Transaction deleted successfully!", "success")
     except mysql.connector.Error as err:
@@ -194,7 +202,7 @@ def delete_transaction(transaction_id):
         print(f"Error deleting transaction: {err}")
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
 
     return redirect(url_for("transactions_bp.transactions_page"))
 
@@ -210,20 +218,27 @@ def my_transactions():
         return redirect(url_for("auth_bp.student_login"))
 
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
 
-        # Fetching unique transactions for logged-in student
+        # Fetching transactions for logged-in student
         cursor.execute("""
-            SELECT DISTINCT t.transaction_id, 
+            SELECT t.transaction_id, 
                    b.book_name, 
                    t.action, 
                    t.borrow_date, 
-                   t.due_date, 
-                   (SELECT return_date 
-                    FROM returned_books rb 
-                    WHERE rb.student_id = t.student_id AND rb.book_id = t.book_id
-                    LIMIT 1) AS return_date,
+                   CASE 
+                       WHEN t.action = 'borrow' THEN t.due_date
+                       ELSE 'N/A'
+                   END AS due_date,
+                   CASE 
+                       WHEN t.action = 'return' THEN 
+                           (SELECT return_date 
+                            FROM returned_books rb 
+                            WHERE rb.student_id = t.student_id AND rb.book_id = t.book_id
+                            LIMIT 1)
+                       ELSE 'N/A'
+                   END AS return_date,
                    t.transaction_date
             FROM transactions t
             LEFT JOIN books b ON t.book_id = b.book_id
@@ -245,6 +260,6 @@ def my_transactions():
 
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
 
     return render_template("my_transactions.html", transactions=transactions, student_name=student_name)

@@ -1,25 +1,15 @@
 import mysql.connector
 from flask import Blueprint, render_template, request, redirect, url_for, flash,session
-
+from config import get_db_connection
 #books_blueprint
 books_bp = Blueprint('books_bp', __name__, template_folder="templates")
 
-#get_db_connection
-def get_db_connection():
-    conn = mysql.connector.connect(
-        host='localhost',  # Your MySQL host (usually localhost)
-        user='root',       # Your MySQL username
-        password='1234mysql$&**',  # Your MySQL password
-        database='library_db',  # Your database name
-        auth_plugin='mysql_native_password'
-    )
-    return conn
 
 #to display books
 @books_bp.route('/books', methods=['GET'])
 def books():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
     # Fetching books from database
     cursor.execute("""
@@ -35,7 +25,7 @@ def books():
             books_by_language[lang] = []
         books_by_language[lang].append(book)
 
-    conn.close()
+    connection.close()
     return render_template('books.html', books_by_language=books_by_language, role="Admin")
 
 
@@ -49,8 +39,8 @@ def add_book():
     language = request.form['language']
     admin_id = session.get("admin_id")
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
     #Adding new book
     cursor.execute("""
@@ -65,9 +55,9 @@ def add_book():
         WHERE admin_id = %s
     """, (admin_id,))
 
-    conn.commit()
+    connection.commit()
     cursor.close()
-    conn.close()
+    connection.close()
 
     flash('Book added successfully!', 'success')
     return redirect(url_for('books_bp.books'))
@@ -76,8 +66,8 @@ def add_book():
 @books_bp.route('/books/delete/<int:book_id>', methods=['GET'])
 def delete_book(book_id):
     admin_id = session.get("admin_id")
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
     # Delete the book
     cursor.execute("DELETE FROM books WHERE book_id = %s", (book_id,))
@@ -89,9 +79,9 @@ def delete_book(book_id):
         WHERE admin_id = %s
     """, (admin_id,))
 
-    conn.commit()
+    connection.commit()
     cursor.close()
-    conn.close()
+    connection.close()
 
     flash('Book removed successfully!', 'success')
     return redirect(url_for('books_bp.books'))
@@ -100,8 +90,8 @@ def delete_book(book_id):
 #to update book details (Admin only)
 @books_bp.route('/books/update/<int:book_id>', methods=['GET', 'POST'])
 def update_book(book_id):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    connection= get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
     if request.method == 'POST':
         book_name = request.form['book_name']
@@ -117,7 +107,7 @@ def update_book(book_id):
             WHERE book_id = %s
         """, (book_name, author, year, available_copies, language, book_id))
 
-        conn.commit()
+        connection.commit()
         flash('Book updated successfully!', 'success')
         return redirect(url_for('books_bp.books'))
 
@@ -125,6 +115,6 @@ def update_book(book_id):
     book = cursor.fetchone()
 
     cursor.close()
-    conn.close()
+    connection.close()
 
     return render_template('update_book.html', book=book)

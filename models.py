@@ -3,10 +3,10 @@ from database import get_db_connection
 
 
 def create_users_table():
-    conn = get_db_connection()
+    connection = get_db_connection()
 
-    if conn:
-        cursor = conn.cursor()
+    if connection:
+        cursor = connection.cursor()
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -18,8 +18,8 @@ def create_users_table():
             )
         """)
 
-        conn.commit()
+        connection.commit()
         cursor.close()
-        conn.close()
+        connection.close()
     else:
         print("Error: Could not connect to the database!")

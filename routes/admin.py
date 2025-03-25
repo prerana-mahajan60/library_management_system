@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session, request
 import mysql.connector
 from flask import current_app
-from database import get_db_connection
+from config import get_db_connection
 
 #admin-blueprint
 admin_bp = Blueprint("admin", __name__, template_folder="templates")

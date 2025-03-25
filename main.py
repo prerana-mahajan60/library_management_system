@@ -8,6 +8,11 @@ from routes.student import student_bp
 from config import get_db_connection
 from database import get_db_connection
 from routes.browse_books import browse_books_bp
+import os
+from dotenv import load_dotenv
+
+#Load .env Variables
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "super_secret_key"

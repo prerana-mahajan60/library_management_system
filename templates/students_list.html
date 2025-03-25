@@ -14,8 +14,13 @@
         }
 
         body {
-            background: url("{{ url_for('static', filename='image/lib3.jpg') }}") no-repeat center center;
+             margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url('/static/image/mylib.jpg');
             background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             color: white;
             display: flex;
         }
@@ -30,12 +35,16 @@
             left: 0;
             top: 0;
             overflow-y: auto;
+            align-items:center;
         }
 
-        .sidebar h3 {
-            color: white;
-            text-align: center;
+        .sidebar h2 {
+             color: #f1f1f1;
             margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align:center;
+            text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
         }
 
         .sidebar a {
@@ -45,6 +54,8 @@
             padding: 10px;
             border-radius: 5px;
             transition: 0.3s;
+            text-align:center;
+            font-size:18px;
         }
 
         .sidebar a:hover {
@@ -59,16 +70,16 @@
         }
 
         .student-card {
-            background: url('/static/image/b4.avif') no-repeat center center;
+            background: url('/static/image/bd7.jpg') no-repeat center center;
             background-size: cover;
             background-repeat: no-repeat;
             backdrop-filter: blur(10px);
-            border-radius: 18px;
+            border-radius: 30px;
             padding: 15px;
             text-align: center;
             transition: 0.3s;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            color: black;
+            color: white;
         }
 
         .student-card:hover {
@@ -113,16 +124,16 @@
 
 <!--Sidebar-->
 <div class="sidebar">
-    <h3>Admin Panel</h3>
+    <h2>Admin System</h2>
     <a href="{{ url_for('admin.admin_home') }}">Home</a>
-    <a href="{{ url_for('books_bp.books') }}">Books</a>
+    <a href="{{ url_for('books_bp.books') }}">Manage Books</a>
     <a href="{{ url_for('transactions_bp.transactions_page') }}">Students Transactions</a>
-    <a href="{{ url_for('student.students_list_page') }}" style="background: rgba(255, 255, 255, 0.2);">👨‍🎓 Students List</a>
+    <a href="{{ url_for('student.students_list_page') }}">Students List</a>
 </div>
 
 <!--Main Content-->
 <div class="main-content">
-    <h2 class="text-center mb-4">Student Profiles</h2>
+    <h2 class="text-center mb-4"><b>👨‍🎓Student Profiles</b></h2>
     <div class="row">
         {% for student in students %}
         <div class="col-md-4 mb-3">

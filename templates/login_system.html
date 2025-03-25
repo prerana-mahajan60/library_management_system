@@ -11,8 +11,11 @@
     <style>
         * {
             font-family: 'Elsie Swash Caps', cursive;
-            color: white !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
 
         body {
             background: linear-gradient(to bottom, #0d1b2a, #1b263b, #415a77);
@@ -21,44 +24,84 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            background-image: url("{{ url_for('static', filename='image/bk10.gif') }}");
+            background-image: url("{{ url_for('static', filename='image/newlib33.jpg') }}");
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             padding: 20px;
-        }
-
-        /* Logo */
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            margin-top: 50px; /* Added more margin to push it down */
+            color: white;
+            position: relative;
         }
 
         .top-heading {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: bold;
             text-align: center;
-            margin-top: -20px; /* Adjusted to move it slightly higher */
+            color: white;
+            text-shadow: 0 0 25px rgb(255, 255, 167), 0 0 50px rgb(247, 247, 149);
+            position: absolute;
+            top: 24%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            white-space: nowrap;
         }
 
-        /* Main Container */
+        .message-box {
+            position: absolute;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 40px;
+            box-shadow: 0 0 15px #a3d2d7;
+            max-width: 280px;
+            font-size: 1.1rem;
+            z-index: 1;
+            transition: 0.3s ease;
+            cursor: pointer;
+            animation: messageFloat 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes messageFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .message-box:hover {
+            box-shadow: 0 0 25px rgb(255, 255, 167), 0 0 50px rgb(247, 247, 149);
+            transform: scale(1.1);
+        }
+
+        .top-left { top: 5%; left: 5%; }
+        .top-right { top: 5%; right: 5%; }
+        .bottom-left { bottom: 5%; left: 5%; }
+        .bottom-right { bottom: 5%; right: 5%; }
+
+        /* Glass Container */
         .glass-container {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 25px;
-            padding: 40px;
+            padding: 44px;
+            top: -12%;
             text-align: center;
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.838);
             max-width: 400px;
             width: 90%;
+            z-index: 2;
+            position: relative;
+            margin-top: 135px;
         }
 
-        /* Button */
+        .glass-container p {
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Buttons */
         .btn-custom {
             width: 100%;
             margin: 15px 0;
@@ -73,59 +116,140 @@
         }
 
         .btn-admin {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(42, 41, 41, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            color: white;
+
         }
 
         .btn-admin:hover {
-            background: #ffd1ed;
+            background: #e4cada;
             color: black !important;
             border: 2px solid white;
         }
 
         .btn-student {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(42, 41, 41, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            color: white;;
         }
 
         .btn-student:hover {
-            background: #ccfcff;
+            background: #c1d0d1;
             color: black !important;
             border: 2px solid white;
         }
 
-        /* Responsive */
-        @media (max-width: 500px) {
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .message-box {
+                font-size: 1rem;
+                max-width: 230px;
+                padding: 10px 15px;
+            }
+
             .top-heading {
-                font-size: 24px;
+                font-size: 36px;
+                top: 10%;
             }
-            .glass-container {
-                padding: 30px;
-            }
-            .btn-custom {
-                font-size: 18px;
-                padding: 12px;
-            }
+        }
+        img{
+               width: 100px;
+              height: 105px;
+              margin-top:12px;
         }
     </style>
 </head>
 <body>
+    <img width="64" height="64" src="https://img.icons8.com/dusk/64/library.png" alt="library"/>
+<!-- Static Welcome Heading -->
+<h1 class="top-heading">📚 Welcome to Library Management System</h1>
 
-    <!--Top-Middle Heading-->
-    <h1 class="top-heading">📚 Welcome to Library Management System</h1>
+<!-- Message Boxes (Floating) -->
+<div class="message-box top-left" onclick="changeQuote(this)">💡 "A room without books is like a body without a soul."</div>
+<div class="message-box top-right" onclick="changeQuote(this)">🔑 "The only thing you absolutely have to know is the location of the library."</div>
+<div class="message-box bottom-left" onclick="changeQuote(this)">📚 "So many books, so little time."</div>
+<div class="message-box bottom-right" onclick="changeQuote(this)">✨ "A library is a hospital for the mind."</div>
 
-    <!--Logo-->
-    <img src="https://cdn-icons-png.flaticon.com/512/1946/1946433.png" alt="Library Logo" class="logo">
+<!-- Glass Container -->
+<div class="glass-container">
+    <p>Select your panel to login or register</p>
+    <a href="{{ url_for('auth.admin_login') }}" class="btn btn-custom btn-admin">👨‍💼<b> Admin Panel</b></a>
+    <a href="{{ url_for('auth.student_login') }}" class="btn btn-custom btn-student"><b>🎓 Student Panel</b></a>
+</div>
 
-    <div class="glass-container">
-        <p>Select your panel to login or register</p>
-        <a href="{{ url_for('auth.admin_login') }}" class="btn btn-custom btn-admin">👨‍💼 Admin Panel</a>
-        <a href="{{ url_for('auth.student_login') }}" class="btn btn-custom btn-student">🎓 Student Panel</a>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Array of quotes
+    const quotes = [
+    "📚 'Books are uniquely portable magic.' — Stephen King",
+    "✨ 'A library is infinity under a roof.'",
+    "📖 'Libraries store the energy that fuels imagination.'",
+    "💡 'When in doubt, go to the library.' — J.K. Rowling",
+    "📚 'A library is a hospital for the mind.'",
+    "✨ 'Knowledge is free at the library.'",
+    "📖 'Books: Your ticket to adventure.'",
+    "💡 'Read more, learn more, live more.'",
+    "🔑 'Open a book, open your mind.'",
+
+    // New Quotes
+    "📚 'A book is a dream you hold in your hands.'",
+    "✨ 'Between the pages of a book is a lovely place to be.'",
+    "📖 'One book, a thousand adventures.'",
+    "💡 'Books: the ultimate travel companions.'",
+    "🔑 'A library card is a passport to knowledge.'",
+    "📚 'Reading: your mind’s greatest workout.'",
+    "✨ 'Escape reality, read a book.'",
+    "📖 'A book is a gift you can open again and again.'",
+    "💡 'Words have the power to change the world.'",
+    "🔑 'Explore the universe, one page at a time.'",
+
+    // More Creative & Unique
+    "📚 'Turn the page, start the adventure.'",
+    "✨ 'Ink and paper, the ingredients of magic.'",
+    "📖 'Books whisper the secrets of centuries.'",
+    "💡 'Reading is dreaming with open eyes.'",
+    "🔑 'A good book is the best company.'",
+    "📚 'Feed your soul, read a book.'",
+    "✨ 'Books are mirrors of the soul.'",
+    "📖 'Write your own story, but read many.'",
+    "💡 'A book is a voyage of the mind.'",
+    "🔑 'Imagination starts with the first page.'",
+
+    // Short and Witty
+    "📚 'Read. Relax. Repeat.'",
+    "✨ 'Books: caffeine for the soul.'",
+    "📖 'Once upon a time... starts now.'",
+    "💡 'One chapter closer to wisdom.'",
+    "🔑 'Libraries: where magic lives.'",
+    "📚 'Lost in a book, found in a story.'",
+    "✨ 'Read past your bedtime.'",
+    "📖 'Books: the original time machines.'",
+    "💡 'Words build worlds.'",
+    "🔑 'Books: the quietest teachers.'",
+
+    // Philosophical & Thought-Provoking
+    "📚 'Reading gives us someplace to go when we have to stay where we are.'",
+    "✨ 'A room without books is like a body without a soul.' — Cicero",
+    "📖 'We lose ourselves in books, we find ourselves there too.'",
+    "💡 'Books are a uniquely portable magic.' — Stephen King",
+    "🔑 'Libraries: where ideas are born and grow.'",
+    "📚 'A book is a device to ignite the imagination.'",
+    "✨ 'Libraries are filled with doorways to new worlds.'",
+    "📖 'Books: where knowledge meets imagination.'",
+    "💡 'Every book is a new adventure waiting to be read.'",
+    "🔑 'Read. Reflect. Grow.'"
+];
+
+    // Function to change the quote on click
+    function changeQuote(element) {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        element.innerHTML = quotes[randomIndex];
+    }
+</script>
 
 </body>
 </html>

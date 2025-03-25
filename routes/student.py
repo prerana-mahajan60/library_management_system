@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session, current_app, request
-from database import get_db_connection
+from config import get_db_connection
 import traceback
 
 student_bp = Blueprint("student", __name__, template_folder="templates")
@@ -7,6 +7,7 @@ student_bp = Blueprint("student", __name__, template_folder="templates")
 #Students Home
 @student_bp.route("/student_home", endpoint="student_home")
 def student_home():
+    print("👀 Session Data: ", session)  # ✅ Debug
     if "student_id" not in session or session.get("role") != "Student":
         flash("Please log in first!", "danger")
         return redirect(url_for("auth.student_login"))
@@ -59,16 +60,17 @@ def student_profile():
         flash("Please log in first!", "danger")
         return redirect(url_for("auth.student_login"))
 
-    student_id = session["student_id"]
+    session.modified = True  # Ensure session is modified and refreshed
 
+    student_id = session["student_id"]
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
     try:
         #Fetching student data
         cursor.execute("""
-            SELECT student_id, name, email, course, role, total_books_borrowed,
-                   total_books_returned, gender
+            SELECT student_id, name, email, course, gender, role, total_books_borrowed,
+                   total_books_returned
             FROM student
             WHERE student_id = %s
         """, (student_id,))
@@ -76,7 +78,7 @@ def student_profile():
 
         if not student_data:
             flash("⚠️ No student data found.", "warning")
-            return redirect(url_for("auth.student_login"))
+            return redirect(url_for("auth.student_home"))
 
         #profile_image select based on gender
         gender = student_data.get("gender", "").strip().lower()

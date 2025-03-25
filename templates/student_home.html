@@ -26,16 +26,16 @@
 
         /* Navbar */
         .glass-navbar {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0);
             backdrop-filter: blur(10px);
             padding: 15px;
-             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+             box-shadow: 0 0 15px rgba(255, 255, 255, 0.858);
         }
 
         .navbar-nav {
             margin: 0 auto;
             text-align: center;
-             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+             box-shadow: 0 0 15px rgba(255, 255, 255, 0.639);
         }
 
         .navbar-nav .nav-item {
@@ -59,6 +59,7 @@
             width: 90%;
             margin: auto;
             overflow: hidden;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         .carousel {
@@ -70,7 +71,8 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
             gap: 15px;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            padding-top: 15px
         }
 
         .carousel::-webkit-scrollbar {
@@ -140,12 +142,20 @@
         /* Footer */
         .footer {
             text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: white;
-            font-size: 1rem;
-            margin-top: 50px;
+             padding: 15px 10px;
+             background: rgba(255, 255, 255, 0);
+             backdrop-filter: blur(10px);
+             box-shadow: 0 0 12px rgba(255, 255, 255, 0.852);
+             color: white;
+             font-size: 1.1rem;
+             margin-top: 50px;
+             border-top: 1px solid rgba(255, 255, 255, 0.2);
+             border-radius: 10px;
+        }
+
+        .footer p {
+              margin: 5px 0;
+              text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
         }
         .text-center
         {
@@ -153,7 +163,17 @@
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 
         }
+
+        .navbar-brand::before {
+           content: "\f501";
+           font-family: "Font Awesome 5 Free";
+           font-weight: 900;
+           margin-right: 10px;
+           text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
+           font-size:25px;
+       }
     </style>
+
 </head>
 
 <body>
@@ -161,7 +181,7 @@
     <!--Navbar -->
     <nav class="navbar navbar-expand-lg glass-navbar">
         <div class="container text-center">
-            <a class="navbar-brand custom-font" href="#" style="color: white;">📚 Student System</a>
+            <a class="navbar-brand custom-font" href="#" style="color: white;"><b style="text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;">Student System</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -177,8 +197,8 @@
     </nav>
 
     <section class="hero-section text-center">
-        <h1>Welcome, {{ student.name }} 📖</h1>
-        <i class="fa fa-graduation-cap" style="font-size:3rem; margin-top:10px; color:#ffd700;"></i>
+        <h2 style=" text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;">Welcome, {{ student.name }} 📖</h2>
+        <i class="fa fa-graduation-cap" style="font-size:4rem; margin-top:10px;"></i>
     </section>
 
     <!--Book Carousels (sorted by Language) -->
@@ -209,7 +229,8 @@
 
     <!--Footer-->
     <footer class="footer">
-        &copy; 2025 Library Management System | Developed for Students
+        <p>&copy; 2025 Library Management System | Developed for Students</p>
+         <p><i class="fas fa-graduation-cap"></i> Empowering Students Through Knowledge</p>
     </footer>
 
     <!--JavaScript for Carousel Navigation-->
