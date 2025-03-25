@@ -29,13 +29,13 @@
             background: rgba(255, 255, 255, 0);
             backdrop-filter: blur(10px);
             padding: 15px;
-             box-shadow: 0 0 15px rgba(255, 255, 255, 0.858);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.858);
         }
 
         .navbar-nav {
             margin: 0 auto;
             text-align: center;
-             box-shadow: 0 0 15px rgba(255, 255, 255, 0.639);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.639);
         }
 
         .navbar-nav .nav-item {
@@ -51,7 +51,7 @@
         .hero-section {
             text-align: center;
             padding: 50px 20px;
-          }
+        }
 
         /* Carousel */
         .carousel-container {
@@ -102,15 +102,16 @@
         .book-card p {
             color: black !important;
         }
+
         .book-card h5 {
-                 color: black !important;
-                 font-size: 1.2rem;
-                 text-align: center;
-                 white-space: normal;
-                 word-wrap: break-word;
-                 overflow-wrap: break-word;
-                 max-width: 90%;
-       }
+            color: black !important;
+            font-size: 1.2rem;
+            text-align: center;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 90%;
+        }
 
         .book-card:hover {
             transform: scale(1.05);
@@ -142,62 +143,104 @@
         /* Footer */
         .footer {
             text-align: center;
-             padding: 15px 10px;
-             background: rgba(255, 255, 255, 0);
-             backdrop-filter: blur(10px);
-             box-shadow: 0 0 12px rgba(255, 255, 255, 0.852);
-             color: white;
-             font-size: 1.1rem;
-             margin-top: 50px;
-             border-top: 1px solid rgba(255, 255, 255, 0.2);
-             border-radius: 10px;
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.852);
+            color: white;
+            font-size: 1.1rem;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
         }
 
         .footer p {
-              margin: 5px 0;
-              text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+            margin: 5px 0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
         }
-        .text-center
-        {
-           color:white;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 
+        .text-center {
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         .navbar-brand::before {
-           content: "\f501";
-           font-family: "Font Awesome 5 Free";
-           font-weight: 900;
-           margin-right: 10px;
-           text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
-           font-size:25px;
-       }
-    </style>
+            content: "\f501";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-right: 10px;
+            text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;
+            font-size: 25px;
+        }
 
+        .flash-msg {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 250px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                right: -300px;
+                opacity: 0;
+            }
+
+            to {
+                right: 20px;
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
+    <!--Flash Messages-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show flash-msg"
+        role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <!--Navbar -->
     <nav class="navbar navbar-expand-lg glass-navbar">
         <div class="container text-center">
-            <a class="navbar-brand custom-font" href="#" style="color: white;"><b style="text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;">Student System</b></a>
+            <a class="navbar-brand custom-font" href="#" style="color: white;"><b
+                    style="text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;">Student
+                    System</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('student.student_profile') }}">Student Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('browse_books_bp.browse_books') }}">Browse Books</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('transactions_bp.my_transactions') }}"> My Transactions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('student.student_logout') }}">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('student.student_profile') }}">Student
+                            Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('browse_books_bp.browse_books') }}">Browse
+                            Books</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('transactions_bp.my_transactions') }}">
+
+                            My Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('student.student_logout') }}">Logout</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <section class="hero-section text-center">
-        <h2 style=" text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;">Welcome, {{ student.name }} 📖</h2>
+        <h2
+            style="text-shadow: 0 0 18px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.8) !important;">
+            Welcome, {{ student.name }} 📖
+        </h2>
         <i class="fa fa-graduation-cap" style="font-size:4rem; margin-top:10px;"></i>
     </section>
 
@@ -209,17 +252,17 @@
             <button class="carousel-btn prev" onclick="moveSlide('{{ lang }}', -1)">&lt;</button>
             <div class="carousel" id="carousel-{{ lang }}">
                 {% if books %}
-                    {% for book in books %}
-                    <div class="book-card">
-                        <h5>{{ book.book_name }}</h5>
-                        <p>📖 Author: {{ book.author }}</p>
-                        <p>📅 Year: {{ book.year }}</p>
-                        <p>Available Copies: {{ book.available_copies }}</p>
-                        <p>🌐 Language: {{ book.language }}</p>
-                    </div>
-                    {% endfor %}
+                {% for book in books %}
+                <div class="book-card">
+                    <h5>{{ book.book_name }}</h5>
+                    <p>📖 Author: {{ book.author }}</p>
+                    <p>📅 Year: {{ book.year }}</p>
+                    <p>Available Copies: {{ book.available_copies }}</p>
+                    <p>🌐 Language: {{ book.language }}</p>
+                </div>
+                {% endfor %}
                 {% else %}
-                    <p class="text-center text-warning">No books available in this category.</p>
+                <p class="text-center text-warning">No books available in this category.</p>
                 {% endif %}
             </div>
             <button class="carousel-btn next" onclick="moveSlide('{{ lang }}', 1)">&gt;</button>
@@ -227,13 +270,13 @@
     </section>
     {% endfor %}
 
-    <!--Footer-->
+    <!--Footer -->
     <footer class="footer">
         <p>&copy; 2025 Library Management System | Developed for Students</p>
-         <p><i class="fas fa-graduation-cap"></i> Empowering Students Through Knowledge</p>
+        <p><i class="fas fa-graduation-cap"></i> Empowering Students Through Knowledge</p>
     </footer>
 
-    <!--JavaScript for Carousel Navigation-->
+    <!--JavaScript for Carousel Navigation & Auto-dismiss Flash Messages -->
     <script>
         function moveSlide(lang, direction) {
             let carousel = document.getElementById("carousel-" + lang);
@@ -254,6 +297,19 @@
                 }
             }
         }
+
+        // Auto-hide flash messages
+        document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+        let alerts = document.querySelectorAll('.flash-msg');
+        alerts.forEach(function (alert) {
+            alert.classList.add('fade-out');
+            setTimeout(function () {
+                alert.remove();
+            }, 500); 
+        });
+    }, 3000);
+  });
     </script>
 
 </body>

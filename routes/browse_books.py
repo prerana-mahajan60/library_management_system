@@ -36,6 +36,9 @@ def browse_books():
         student_id=student_id
     )
 
+def clear_login_success_flash():
+    flashes = session.get('_flashes', [])
+    session['_flashes'] = [msg for msg in flashes if msg[0] != "success" or msg[1] != "Login Successful!"]
 
 #to display borrowed books
 @browse_books_bp.route('/borrowed_books')

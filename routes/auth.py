@@ -6,11 +6,12 @@ from flask_bcrypt import Bcrypt
 
 auth_bp = Blueprint("auth", __name__, template_folder="templates")
 
-#Initialize Bcrypt
+# Initialize Bcrypt
 bcrypt = Bcrypt()
 
+
 # ---------------------------------------------Admin-------------------------------------------------------
-#Admin_Register
+# Admin_Register
 @auth_bp.route("/admin_register", methods=["GET", "POST"])
 def admin_register():
     if request.method == "POST":
@@ -19,23 +20,26 @@ def admin_register():
         password = request.form["password"].strip()
         gender = request.form["gender"].strip().lower()
 
-        if not gender:
-            flash("Please select your gender!", "danger")
+        # Validate Required Fields
+        if not name or not email or not password or not gender:
+            flash("All fields are required!", "danger")
             return redirect(url_for("auth.admin_register"))
 
-        # Hash-password for security
+        # Hash password for security
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-        #get_database_connection
+        # Get database connection
         connection = get_db_connection()
         cursor = connection.cursor()
 
         try:
+            # Check if email already exists
             cursor.execute("SELECT email FROM admin WHERE email = %s", (email,))
             if cursor.fetchone():
                 flash("Error: Email already exists!", "danger")
                 return redirect(url_for("auth.admin_register"))
 
+            # Insert new admin data
             cursor.execute(
                 """
                 INSERT INTO admin (admin_name, email, password, gender)
@@ -59,14 +63,14 @@ def admin_register():
     return render_template("admin_register.html")
 
 
-#Admin_Login
+# Admin_Login
 @auth_bp.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         email = request.form["email"].strip()
         password = request.form["password"].strip()
 
-        #get_database_connection
+        # Get database connection
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
@@ -85,7 +89,7 @@ def admin_login():
         if admin:
             db_password = admin["password"]
 
-            #Checking_password_validity
+            # Checking password validity
             if db_password and bcrypt.check_password_hash(db_password, password):
                 session.clear()
                 session["admin_id"] = admin["admin_id"]
@@ -93,7 +97,6 @@ def admin_login():
                 session["role"] = "Admin"
 
                 flash("Login Successful!", "success")
-
                 return redirect(url_for("admin.admin_home"))
 
             else:
@@ -106,8 +109,7 @@ def admin_login():
 
 
 # ------------------------------------Student--------------------------------------------------
-
-#Student_Register
+# Student_Register
 @auth_bp.route("/student_register", methods=["GET", "POST"])
 def student_register():
     if request.method == "POST":
@@ -117,21 +119,26 @@ def student_register():
         course = request.form.get("course", "").strip()
         gender = request.form.get("gender", "").strip()
 
+        # Validate Required Fields
         if not name or not email or not password or not course or not gender:
             flash("All fields are required!", "danger")
             return redirect(url_for("auth.student_register"))
 
+        # Hash password
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
+        # Get database connection
         connection = get_db_connection()
         cursor = connection.cursor()
 
         try:
+            # Check if email already exists
             cursor.execute("SELECT email FROM student WHERE email = %s", (email,))
             if cursor.fetchone():
                 flash("Email already exists!", "danger")
                 return redirect(url_for("auth.student_register"))
 
+            # Insert new student data
             cursor.execute(
                 """
                 INSERT INTO student (email, password, course, gender, name) 
@@ -154,14 +161,15 @@ def student_register():
 
     return render_template("student_register.html")
 
-#student_login
+
+# Student_Login
 @auth_bp.route("/student_login", methods=["GET", "POST"])
 def student_login():
-    session.pop('_flashes', None)
     if request.method == "POST":
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "").strip()
 
+        # Get database connection
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
@@ -180,6 +188,7 @@ def student_login():
         if student:
             db_password = student["password"]
 
+            # Check password
             if db_password and bcrypt.check_password_hash(db_password, password):
                 session.clear()
                 session["student_id"] = student["student_id"]
@@ -198,15 +207,15 @@ def student_login():
     return render_template("student_login.html")
 
 
-#Logout
+# Logout
 @auth_bp.route("/logout")
 def logout():
     session.clear()
-    flash("🔓 Logged Out Successfully!", "info")
+    flash("Logged Out Successfully!", "info")
     return redirect(url_for("auth.login_system"))
 
 
-#Login_System
+# Login_System
 @auth_bp.route("/login_system")
 def login_system():
     return render_template("login_system.html")
