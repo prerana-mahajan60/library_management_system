@@ -142,22 +142,22 @@
       <form action="{{ url_for('auth.student_register') }}" method="POST">
         <div class="mb-3">
           <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" class="form-control" required>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name"required>
         </div>
 
         <div class="mb-3">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="form-control" required>
+          <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
         </div>
 
         <div class="mb-3">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="form-control" required>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
         </div>
 
         <div class="mb-3">
           <label for="course">Course</label>
-          <input type="text" id="course" name="course" class="form-control" required>
+          <input type="text" id="course" name="course" class="form-control" placeholder="Enter your course name" required>
         </div>
 
         <!-- Gender Selection -->
@@ -167,6 +167,7 @@
         <option value="" disabled selected>Select Gender</option>
         <option value="male">Male</option>
         <option value="female">Female</option>
+        <option value="Other">Other</option>
     </select>
 </div>
 

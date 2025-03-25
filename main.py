@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_bcrypt import Bcrypt
+from flask_compress import Compress
 from routes.auth import auth_bp
 from routes.books import books_bp
 from routes.transactions import transactions_bp
@@ -11,17 +12,20 @@ from routes.browse_books import browse_books_bp
 import os
 from dotenv import load_dotenv
 
-#Load .env Variables
+# Load .env Variables
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "super_secret_key"
 
+#Initializing Flask-Compress for faster loading
+Compress(app)
+
 # Initialize Flask-Bcrypt
 bcrypt = Bcrypt(app)
 
-#---------------------------------------------------All Files Blueprints---------------------------------
-#registering Blueprints with URL prefixes
+# ---------------------------------------------------All Files Blueprints---------------------------------
+# Registering Blueprints with URL prefixes
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(student_bp, url_prefix="/student")
@@ -29,7 +33,7 @@ app.register_blueprint(books_bp, url_prefix="/books")
 app.register_blueprint(transactions_bp, url_prefix="/transactions")
 app.register_blueprint(browse_books_bp, url_prefix="/browse_books")
 
-#--------------------------------------Routes---------------------------------------------------
+# --------------------------------------Routes---------------------------------------------------
 @app.route("/")
 def index():
     return render_template("login_system.html")

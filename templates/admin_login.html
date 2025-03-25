@@ -164,12 +164,12 @@
       <form action="{{ url_for('auth.admin_login') }}" method="POST">
         <div class="mb-3">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="form-control" required>
+          <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
         </div>
 
         <div class="mb-3">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="form-control" required>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
         </div>
 
         <button type="submit" class="btn btn-login">Login</button>
