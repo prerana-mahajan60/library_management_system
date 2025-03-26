@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for,send_from_directory
 from flask_bcrypt import Bcrypt
 from flask_compress import Compress
 from routes.auth import auth_bp
@@ -76,6 +76,11 @@ def transactions_redirect():
 @app.route("/browse_books")
 def browse_books_redirect():
     return redirect(url_for("browse_books_bp.browse_books"))
+
+#Serve Static Files with Cache Enabled for 1 Year
+@app.route('/static/<path:filename>')
+def custom_static(filename):
+    return send_from_directory('static', filename, cache_timeout=31536000)  # Cache for 1 year
 
 if __name__ == "__main__":
     app.run(debug=True)

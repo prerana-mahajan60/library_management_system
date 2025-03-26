@@ -2,6 +2,11 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
 import os
+import sys
+import io
+
+# ✅ Force UTF-8 Encoding for Console Output
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 # ✅ Load .env Variables
 load_dotenv()
@@ -32,8 +37,8 @@ def get_db_connection():
     try:
         connection = mysql.connector.connect(**db_config)
         if connection.is_connected():
-            print("✅ Database Connection Successful!")
+            print("✅ Database Connection Successful!")  # Emoji Now Works Correctly
             return connection
     except Error as err:
-        print(f"❌ Database Connection Error: {err}")
+        print(f"❌ Database Connection Error: {err}")  # Error Emoji Works
     return None
