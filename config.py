@@ -1,44 +1,45 @@
-import mysql.connector
-from mysql.connector import Error
+import psycopg2
+from psycopg2 import OperationalError
 from dotenv import load_dotenv
 import os
 import sys
 import io
 
-# ✅ Force UTF-8 Encoding for Console Output
+#Force UTF-8 Encoding for Console Output
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-# ✅ Load .env Variables
+#Load .env Variables
 load_dotenv()
 
-# ✅ Environment Variables (With Default Values)
+#Environment Variables (With Default Values)
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "PMysql@4545#*")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "P4545post@*#")
 DB_NAME = os.getenv("DB_NAME", "library_db")
+DB_PORT = os.getenv("DB_PORT", "5432")
 
-# ✅ Print Variables to Verify
-print("DB_HOST:", DB_HOST)  # Corrected
-print("DB_USER:", DB_USER)  # Corrected
-print("DB_PASSWORD:", DB_PASSWORD)  # Corrected
-print("DB_NAME:", DB_NAME)  # Corrected
+#Print Variables to Verify
+print("DB_HOST:", DB_HOST)
+print("DB_USER:", DB_USER)
+print("DB_PASSWORD:", DB_PASSWORD)
+print("DB_NAME:", DB_NAME)
+print("DB_PORT:", DB_PORT)
 
-# ✅ Database Configuration
+#Database Configuration
 db_config = {
     'host': DB_HOST,
     'user': DB_USER,
     'password': DB_PASSWORD,
-    'database': DB_NAME,
-    'auth_plugin': 'mysql_native_password'
+    'dbname': DB_NAME,
+    'port': DB_PORT
 }
 
-# ✅ Function to Get Database Connection
+#Function to Get Database Connection
 def get_db_connection():
     try:
-        connection = mysql.connector.connect(**db_config)
-        if connection.is_connected():
-            print("✅ Database Connection Successful!")  # Emoji Now Works Correctly
-            return connection
-    except Error as err:
-        print(f"❌ Database Connection Error: {err}")  # Error Emoji Works
-    return None
+        connection = psycopg2.connect(**db_config)
+        print("PostgreSQL Database Connection Successful!")
+        return connection
+    except OperationalError as err:
+        print(f"PostgreSQL Connection Error: {err}")
+        return None

@@ -83,4 +83,4 @@ def custom_static(filename):
     return send_from_directory('static', filename, cache_timeout=31536000)  # Cache for 1 year
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
